@@ -20,7 +20,7 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-[#1A255B]">
             <div class="mb-4">
                 <a href="/" aria-label="KIDSZSTORE Beranda">
-                    <img src="{{ asset('images/logo.png') }}" alt="Kidszstore Logo" class="w-20 h-20 object-contain rounded-full shadow-lg" />
+                    <img src="{{ asset('images/logo-KidszStore.png') }}" alt="Kidszstore Logo" class="w-20 h-20 object-contain rounded-full shadow-lg" />
                 </a>
             </div>
 

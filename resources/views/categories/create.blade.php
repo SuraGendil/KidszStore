@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Game</title>
+    <title>Tambah Kategori</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
@@ -22,7 +22,7 @@
         Kembali ke Dashboard
     </a>
     <div class="bg-[#1A255B] p-8 rounded-lg shadow-xl border border-gray-700">
-        <h1 class="text-3xl font-bold text-white mb-6">Tambah Game Baru</h1>
+        <h1 class="text-3xl font-bold text-white mb-6">Tambah Kategori Baru</h1>
  
         {{-- Menampilkan Error Validasi --}}
         @if ($errors->any())
@@ -36,15 +36,20 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.games.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-4">
-                <label for="name" class="block text-gray-300 text-sm font-bold mb-2">Nama Game</label>
+                <label for="name" class="block text-gray-300 text-sm font-bold mb-2">Nama Kategori</label>
                 <input type="text" name="name" id="name" value="{{ old('name') }}" class="shadow appearance-none border border-gray-700 rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline bg-[#0e1a4b]" required>
             </div>
             <div class="mb-4">
-                <label for="image" class="block text-gray-300 text-sm font-bold mb-2">Gambar Game</label>
-                <input type="file" name="image" id="image" class="shadow appearance-none border border-gray-700 rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline bg-[#0e1a4b]">
+                <label for="game_id" class="block text-gray-300 text-sm font-bold mb-2">Game</label>
+                <select name="game_id" id="game_id" class="shadow appearance-none border border-gray-700 rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline bg-[#0e1a4b]" required>
+                    <option value="">-- Pilih Game --</option>
+                    @foreach($games as $game)
+                        <option value="{{ $game->id }}" {{ old('game_id') == $game->id ? 'selected' : '' }}>{{ $game->name }}</option>
+                    @endforeach
+                </select>
             </div>
             <div class="mb-6">
                 <label for="status" class="block text-gray-300 text-sm font-bold mb-2">Status</label>

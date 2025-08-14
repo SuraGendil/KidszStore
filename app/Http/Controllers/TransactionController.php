@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // Gunakan ini untuk contoh sederhana
+use App\Models\Order;
 
 class TransactionController extends Controller
 {
@@ -12,8 +12,13 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        // Panggil langsung 'check' karena file check.blade.php berada di root folder views
-        return view('check');
+        // Mengirimkan data transaksi jika ada di query string
+        $transactionCode = request('transaction_code');
+        $transaction = null;
+        if ($transactionCode) {
+            $transaction = Order::with(['product', 'user'])->where('order_id', $transactionCode)->first();
+        }
+        return view('check', compact('transaction', 'transactionCode'));
     }
 
     /**
@@ -21,22 +26,12 @@ class TransactionController extends Controller
      */
     public function check(Request $request)
     {
-        $request->validate([
-            'transaction_code' => 'required|string|min:8|max:20', // Sesuaikan validasi
+        // Validasi input
+        $validated = $request->validate([
+            'transaction_code' => 'required|string|max:255',
         ]);
 
-        $transactionCode = $request->input('transaction_code');
-
-        // Contoh sederhana untuk mengecek di database
-        // Asumsi kamu punya tabel 'transactions'
-        $transaction = DB::table('transactions')
-            ->where('code', $transactionCode)
-            ->first();
-
-        // Redirect kembali ke halaman yang sama dengan membawa hasil
-        return view('check', [
-            'transaction' => $transaction,
-            'transactionCode' => $transactionCode,
-        ]);
+        // Redirect ke halaman index dengan membawa kode transaksi di query string
+        return redirect()->route('transaction.index', ['transaction_code' => $validated['transaction_code']]);
     }
 }

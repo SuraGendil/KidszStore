@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Game;
@@ -34,6 +34,7 @@ class GameController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:games,name',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'status' => 'required|boolean',
         ]);
 
         if ($request->hasFile('image')) {
@@ -50,9 +51,9 @@ class GameController extends Controller
      */
     public function edit(Game $game)
     {
-        // Anda perlu membuat view 'games.edit' untuk fungsionalitas ini.
-        // return view('games.edit', compact('game'));
-        return back()->with('info', 'Halaman edit game belum diimplementasikan.');
+        // Arahkan ke view untuk mengedit game.
+        // Pastikan Anda membuat file view di resources/views/games/edit.blade.php
+        return view('games.edit', compact('game'));
     }
 
     /**
@@ -60,8 +61,23 @@ class GameController extends Controller
      */
     public function update(Request $request, Game $game)
     {
-        // Logika untuk update belum diimplementasikan.
-        return back()->with('info', 'Fungsi update game belum diimplementasikan.');
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:games,name,' . $game->id,
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'status' => 'required|boolean',
+        ]);
+
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
+            if ($game->image) {
+                Storage::disk('public')->delete($game->image);
+            }
+            $validated['image'] = $request->file('image')->store('games', 'public');
+        }
+
+        $game->update($validated);
+
+        return redirect()->route('admin.dashboard')->with('success', 'Game berhasil diperbarui.');
     }
 
     /**

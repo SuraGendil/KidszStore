@@ -32,7 +32,7 @@
     {{-- Header --}}
     <header class="fixed top-0 left-0 right-0 z-50 w-full px-8 py-3 flex items-center justify-between bg-[#0e1a4b] text-white" aria-label="Situs Navigasi Utama">
         <a href="/" class="flex items-center gap-3 shrink-0" aria-label="KIDSZSTORE Beranda">
-            <img src="{{ asset('images/logo.png') }}" alt="KIDSZSTORE Logo" class="h-10 w-10 rounded-full object-cover">
+            <img src="{{ asset('images/logo-KidszStore.png') }}" alt="KIDSZSTORE Logo" class="h-10 w-10 rounded-full object-cover">
             <span class="text-2xl font-bold">KIDSZSTORE</span> {{-- Konsisten dengan KIDSZSTORE --}}
         </a>
         <nav class="flex-1 flex justify-center" aria-label="Menu Navigasi">
@@ -157,7 +157,7 @@
         <h2 id="footer-heading" class="sr-only">Navigasi Footer</h2>
         <div class="flex flex-col md:flex-row md:justify-between gap-8">
             <div class="flex items-center gap-3">
-                <img src="{{ asset('images/logo.png') }}" alt="KIDSZSTORE Logo" class="h-10 w-10 rounded-full bg-[#101c44] object-cover">
+                <img src="{{ asset('images/logo-KidszStore.png') }}" alt="KIDSZSTORE Logo" class="h-10 w-10 rounded-full bg-[#101c44] object-cover">
                 <span class="text-2xl font-bold">KIDSZSTORE</span>
             </div>
             <div class="flex flex-1 justify-between mt-8 md:mt-0">

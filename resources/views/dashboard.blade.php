@@ -74,164 +74,134 @@
             <span role="img" aria-label="Api Emoji">🔥</span> Terlaris Bulan Ini!!
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {{-- Anda perlu mengambil data $products dari HomeController --}}
-            {{-- Contoh: $products = \App\Models\Product::where('is_available', true)->take(4)->get(); --}}
-            {{-- @foreach($products as $product) --}}
-                <article class="bg-[#17307a] rounded-xl overflow-hidden shadow">
-                    {{-- Ganti # dengan route dinamis ke halaman detail produk --}}
-                    <a href="{{-- route('products.show', $product) --}}" class="block group" aria-label="Lihat produk PERMANENT DRAGON">
+            @forelse ($popularProducts as $product)
+                <article class="bg-[#17307a] rounded-xl overflow-hidden shadow flex flex-col">
+                    {{-- Tautan ini sekarang mengarah ke halaman detail produk --}}
+                    <a href="{{ route('product.show', $product->id) }}" class="block group flex flex-col flex-grow" aria-label="Lihat produk {{ $product->title }}">
                         <div class="relative">
-                            <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">Permanent</span>
-                            <img src="{{ asset('images/barang/dragon-permanent.png') }}" alt="Gambar produk PERMANENT DRAGON" class="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-200">
+                            {{-- Menampilkan gambar produk dinamis. Gunakan placeholder jika tidak ada gambar. --}}
+                            <img src="{{ $product->image_url ?? 'https://placehold.co/400x200/1A255B/ffffff?text=No+Image' }}" alt="Gambar produk {{ $product->title }}" class="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-200">
                         </div>
-                        <div class="p-4 bg-[#00213a]">
-                            <h3 class="text-white font-bold text-base mb-1">PERMANENT DRAGON</h3>
-                            <p class="text-teal-300 text-xs mb-1">Transaksi: 1.588</p>
-                            <p class="font-semibold text-white text-lg">Rp 450.000</p>
+                        <div class="p-4 bg-[#00213a] flex flex-col flex-grow">
+                            <h3 class="text-white font-bold text-base mb-1 flex-grow" title="{{ $product->title }}">{{ Str::limit($product->title, 35) }}</h3>
+                            <p class="text-teal-300 text-xs mb-2">Terjual: {{ number_format($product->sold_count) }}+</p>
+                            <p class="font-semibold text-white text-lg">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
                         </div>
                     </a>
                 </article>
-            {{-- @endforeach --}}
+            @empty
+                <p class="text-gray-400 col-span-full text-center">Belum ada produk terlaris bulan ini.</p>
+            @endforelse
         </div>
     </section>
 
     {{-- Product Categories Section (PERBAIKAN UTAMA DI SINI) --}}
-    <section 
-        x-data="{ activeGame: 'CDID', activeProductTab: 'Joki CDIC' }"
+    <section
+        x-data="{
+            categories: {{ json_encode($allCategories) }},
+            products: {{ json_encode($allProducts) }},
+            activeGameId: {{ $games->first()->id ?? 'null' }},
+            activeCategoryId: {{ $allCategories->where('game_id', $games->first()->id ?? null)->first()->id ?? 'null' }},
+
+            get activeCategories() {
+                if (!this.activeGameId) return [];
+                return this.categories.filter(c => c.game_id == this.activeGameId);
+            },
+
+            get activeProducts() {
+                if (!this.activeCategoryId) return [];
+                return this.products.filter(p => p.category_id == this.activeCategoryId);
+            },
+
+            selectGame(gameId) {
+                this.activeGameId = gameId;
+                const firstCategoryOfGame = this.categories.find(c => c.game_id == gameId);
+                this.activeCategoryId = firstCategoryOfGame ? firstCategoryOfGame.id : null;
+            }
+        }"
         class="w-full max-w-[88%] mx-auto mt-8"
     >
-
         {{-- Kategori Game --}}
         <section class="bg-[#0e1a4b] md:rounded-3xl rounded-xl p-6 mb-8" aria-labelledby="game-categories-heading">
             <h2 id="game-categories-heading" class="sr-only">Kategori Game</h2>
-            <div role="tablist" aria-label="Pilih Kategori Game" class="grid grid-cols-2 md:grid-cols-5 gap-6 text-center text-white">
-                {{-- Tombol Game CDID --}}
-                <div role="tab" :aria-selected="activeGame === 'CDID'" tabindex="0" class="group">
-                    <button @click="activeGame = 'CDID'; activeProductTab = 'Joki CDIC'" class="block w-full hover:scale-105 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-lg">
-                        <img src="{{ asset('images/logo_CDID.png') }}" alt="Logo Game CDID" class="mx-auto h-12 mb-2 object-contain">
-                        <h3 class="text-white text-sm">CDID</h3>
-                    </button>
-                </div>
-                
-                {{-- Tombol Game DEAD RAILS --}}
-                <div role="tab" :aria-selected="activeGame === 'DEAD RAILS'" tabindex="-1" class="group">
-                    <button @click="activeGame = 'DEAD RAILS'; activeProductTab = 'Joki DR'" class="block w-full hover:scale-105 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-lg">
-                        <img src="{{ asset('images/logo_dead_rails.png') }}" alt="Logo Game DEAD RAILS" class="mx-auto h-12 mb-2 object-contain">
-                        <h3 class="text-white text-sm">DEAD RAILS</h3>
-                    </button>
-                </div>
+            <div role="tablist" aria-label="Pilih Kategori Game" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 text-center text-white">
+                @forelse ($games as $game)
+                    <div role="tab" :aria-selected="activeGameId === {{ $game->id }}" class="group">
+                        <button @click="selectGame({{ $game->id }})"
+                                :class="{ 'ring-2 ring-blue-400 scale-105': activeGameId === {{ $game->id }} }"
+                                class="block w-full p-2 hover:scale-105 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-lg">
+                            <img src="{{ $game->image_url }}" alt="Logo Game {{ $game->name }}" class="mx-auto h-12 mb-2 object-contain">
+                            <h3 class="text-white text-sm font-semibold">{{ $game->name }}</h3>
+                        </button>
+                    </div>
+                @empty
+                    <p class="text-gray-400 col-span-full text-center">Belum ada game yang tersedia.</p>
+                @endforelse
             </div>
         </section>
 
         {{-- Kategori Produk --}}
         <section class="bg-[#0e1a4b] md:rounded-3xl rounded-xl p-6" aria-labelledby="product-categories-heading">
             <h2 id="product-categories-heading" class="sr-only">Kategori Produk</h2>
-            
+
             <div class="flex flex-wrap gap-4 mb-8" role="tablist" aria-label="Kategori Produk">
-                {{-- Tombol Joki CDIC --}}
-                <template x-if="activeGame === 'CDID'">
-                    <button
-                        @click="activeProductTab = 'Joki CDIC'"
-                        :aria-selected="activeProductTab === 'Joki CDIC' ? 'true' : 'false'"
-                        :tabindex="activeProductTab === 'Joki CDIC' ? '0' : '-1'"
-                        :class="{
-                            'bg-white/20 ring-2 ring-blue-300': activeProductTab === 'Joki CDIC',
-                            'bg-transparent hover:bg-white/10': activeProductTab !== 'Joki CDIC'
-                        }"
-                        class="px-5 py-2 rounded-lg font-semibold text-white border-2 border-blue-400 shadow-inner focus:outline-none transition-colors duration-200"
-                        role="tab"
-                        id="joki-CIDC-tab-btn"
-                        aria-controls="joki-CIDC-panel"
-                    >
-                        Joki CDIC
-                    </button>
+                <template x-if="activeCategories.length > 0">
+                    <template x-for="category in activeCategories" :key="category.id">
+                        <button
+                            @click="activeCategoryId = category.id"
+                            :aria-selected="activeCategoryId === category.id"
+                            :class="{
+                                'bg-white/20 ring-2 ring-blue-300': activeCategoryId === category.id,
+                                'bg-transparent hover:bg-white/10': activeCategoryId !== category.id
+                            }"
+                            class="px-5 py-2 rounded-lg font-semibold text-white border-2 border-blue-400 shadow-inner focus:outline-none transition-colors duration-200"
+                            role="tab"
+                            x-text="category.name"
+                        >
+                        </button>
+                    </template>
                 </template>
-
-                {{-- Tombol GAMEPASS CIDC --}}
-                <template x-if="activeGame === 'CDID'">
-                    <button
-                        @click="activeProductTab = 'GAMEPASS CIDC'"
-                        :aria-selected="activeProductTab === 'GAMEPASS CIDC' ? 'true' : 'false'"
-                        :tabindex="activeProductTab === 'GAMEPASS CIDC' ? '0' : '-1'"
-                        :class="{
-                            'bg-white/20 ring-2 ring-blue-300': activeProductTab === 'GAMEPASS CIDC',
-                            'bg-transparent hover:bg-white/10': activeProductTab !== 'GAMEPASS CIDC'
-                        }"
-                        class="px-5 py-2 rounded-lg font-semibold text-white border-2 border-blue-400 shadow-inner focus:outline-none transition-colors duration-200"
-                        role="tab"
-                        id="gamepass-CIDC-tab-btn"
-                        aria-controls="gamepass-CIDC-panel"
-                    >
-                        GAMEPASS CIDC
-                    </button>
-                </template>
-
-                {{-- Tombol Kategori untuk DEAD RAILS --}}
-                <template x-if="activeGame === 'DEAD RAILS'">
-                    <button
-                        @click="activeProductTab = 'Joki DR'"
-                        :aria-selected="activeProductTab === 'Joki DR' ? 'true' : 'false'"
-                        :tabindex="activeProductTab === 'Joki DR' ? '0' : '-1'"
-                        :class="{
-                            'bg-white/20 ring-2 ring-blue-300': activeProductTab === 'Joki DR',
-                            'bg-transparent hover:bg-white/10': activeProductTab !== 'Joki DR'
-                        }"
-                        class="px-5 py-2 rounded-lg font-semibold text-white border-2 border-blue-400 shadow-inner focus:outline-none transition-colors duration-200"
-                        role="tab"
-                        id="joki-DR-tab-btn"
-                        aria-controls="joki-DR-panel"
-                    >
-                        Joki DR
-                    </button>
+                <template x-if="activeCategories.length === 0 && activeGameId !== null">
+                    <p class="text-gray-400">Tidak ada kategori produk untuk game ini.</p>
                 </template>
             </div>
-            
+
             <div>
-                {{-- Konten untuk Joki CDIC --}}
-                <div x-show="activeProductTab === 'Joki CDIC'" class="text-white p-4 bg-[#17307a] rounded-xl" role="tabpanel" aria-labelledby="joki-CIDC-tab-btn" id="joki-CIDC-panel">
-                    <h3 class="text-xl font-bold mb-2">Produk Joki CDIC</h3>
-                    <p>Ini adalah daftar produk untuk kategori Joki CDIC.</p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
-                        <article class="bg-[#101c44] rounded-xl p-3 relative overflow-hidden shadow group">
-                            <a href="#" class="block" aria-label="Lihat produk Akun CIDC A">
-                                <img src="{{ asset('images/barang/vghuman.jpg') }}" alt="Gambar produk Akun CIDC A" class="rounded-lg w-full h-28 object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-200">
-                                <span class="absolute top-3 right-3 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-semibold">Tersedia</span>
-                                <h3 class="mt-3 text-white text-xs font-semibold">Akun CDIC Level MAX</h3>
-                                <p class="text-[#a1a1a1] text-xs mb-1">ID: 1001</p>
-                                <p class="font-semibold text-white text-sm">Rp 120.000</p>
-                            </a>
-                        </article>
-                        <article class="bg-[#101c44] rounded-xl p-3 relative overflow-hidden shadow group">
-                            <a href="#" class="block" aria-label="Lihat produk Akun CIDC A">
-                                <img src="{{ asset('images/barang/vghuman.jpg') }}" alt="Gambar produk Akun CIDC A" class="rounded-lg w-full h-28 object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-200">
-                                <span class="absolute top-3 right-3 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-semibold">Tersedia</span>
-                                <h3 class="mt-3 text-white text-xs font-semibold">Akun CDIC Level MAX</h3>
-                                <p class="text-[#a1a1a1] text-xs mb-1">ID: 1001</p>
-                                <p class="font-semibold text-white text-sm">Rp 120.000</p>
-                            </a>
-                        </article>
+                <template x-if="activeCategoryId">
+                    <div class="text-white p-4 bg-[#17307a] rounded-xl" role="tabpanel">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
+                            <template x-for="product in activeProducts" :key="product.id">
+                                <article class="bg-[#17307a] rounded-xl overflow-hidden shadow-lg group flex flex-col transition-all duration-300 hover:shadow-blue-400/30 hover:-translate-y-1">
+                                    <a :href="'/product/' + product.id" class="flex flex-col flex-grow" :aria-label="'Lihat produk ' + product.title">
+                                        <div class="relative">
+                                            <img :src="product.image_url || 'https://placehold.co/400x200/101c44/ffffff?text=No+Image'" :alt="'Gambar produk ' + product.title" class="w-full h-32 object-cover transition-transform duration-300 group-hover:scale-105">
+                                            <template x-if="product.stock > 0">
+                                                <span class="absolute top-2 right-2 bg-green-500/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">Tersedia</span>
+                                            </template>
+                                            <template x-if="product.stock <= 0">
+                                                <span class="absolute top-2 right-2 bg-red-500/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">Habis</span>
+                                            </template>
+                                        </div>
+                                        <div class="p-3 flex flex-col flex-grow bg-[#101c44]">
+                                            <h3 class="text-white text-sm font-bold flex-grow min-h-[40px]" x-text="product.title"></h3>
+                                            <div class="flex justify-between items-center mt-2">
+                                                <p class="text-xs text-gray-400 flex items-center gap-1">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4z" clip-rule="evenodd" /></svg>
+                                                    <span x-text="'Stok: ' + product.stock"></span>
+                                                </p>
+                                                <p class="font-semibold text-blue-300 text-sm" x-text="'Rp ' + new Intl.NumberFormat('id-ID').format(product.price)"></p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </article>
+                            </template>
+                        </div>
+                        <template x-if="activeProducts.length === 0">
+                            <p class="text-gray-400 text-center py-8">Tidak ada produk yang tersedia untuk kategori ini.</p>
+                        </template>
                     </div>
-                </div>
-
-                {{-- Konten untuk Gamepass CIDC --}}
-                <div x-show="activeProductTab === 'GAMEPASS CIDC'" class="text-white p-4 bg-[#17307a] rounded-xl" role="tabpanel" aria-labelledby="gamepass-CIDC-tab-btn" id="gamepass-CIDC-panel">
-                    <h3 class="text-xl font-bold mb-2">Produk Gamepass CIDC</h3>
-                    <p>Ini adalah daftar produk untuk kategori Gamepass CIDC.</p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
-                        {{-- Produk Gamepass CIDC di sini --}}
-                    </div>
-                </div>
-
-                {{-- Konten untuk Joki DR --}}
-                <div x-show="activeProductTab === 'Joki DR'" class="text-white p-4 bg-[#17307a] rounded-xl" role="tabpanel" aria-labelledby="joki-DR-tab-btn" id="joki-DR-panel">
-                    <h3 class="text-xl font-bold mb-2">Produk Joki DEAD RAILS</h3>
-                    <p>Ini adalah daftar produk untuk kategori Joki DEAD RAILS.</p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4">
-                        {{-- Produk Joki DR di sini --}}
-                    </div>
-                </div>
+                </template>
             </div>
         </section>
-
     </section>
 </x-app-layout>

@@ -38,22 +38,20 @@
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 border-b border-blue-400/20">
                                 <div>
                                     <h3 class="text-xl font-bold">Detail Transaksi</h3>
-                                    <p class="text-gray-400 text-sm">Kode: <span class="font-mono">{{ $transaction->code }}</span></p>
+                                    <p class="text-gray-400 text-sm">Kode: <span class="font-mono">{{ $transaction->order_id }}</span></p>
                                 </div>
-                                {{-- Asumsi ada kolom 'status' di tabel transaksi --}}
                                 <span class="mt-2 sm:mt-0 px-3 py-1 text-sm font-semibold rounded-full
-                                    {{ ($transaction->status ?? 'pending') === 'success' ? 'bg-green-500/20 text-green-300' :
-                                       (($transaction->status ?? 'pending') === 'pending' ? 'bg-yellow-500/20 text-yellow-300' :
+                                    {{ $transaction->status === 'success' ? 'bg-green-500/20 text-green-300' :
+                                       ($transaction->status === 'pending' ? 'bg-yellow-500/20 text-yellow-300' :
                                        'bg-red-500/20 text-red-300') }}">
-                                    {{ ucfirst($transaction->status ?? 'pending') }}
+                                    {{ ucfirst($transaction->status) }}
                                 </span>
                             </div>
                             <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-sm">
-                                {{-- Asumsi ada kolom-kolom ini di tabel transaksi --}}
-                                <div class="flex justify-between"><span class="text-gray-400">Produk:</span><span class="font-semibold">{{ $transaction->product_name ?? 'N/A' }}</span></div>
-                                <div class="flex justify-between"><span class="text-gray-400">User ID:</span><span class="font-semibold">{{ $transaction->user_id ?? 'N/A' }}</span></div>
-                                <div class="flex justify-between"><span class="text-gray-400">Harga:</span><span class="font-semibold">Rp {{ number_format($transaction->amount ?? 0, 0, ',', '.') }}</span></div>
-                                <div class="flex justify-between"><span class="text-gray-400">Metode Pembayaran:</span><span class="font-semibold">{{ $transaction->payment_method ?? 'N/A' }}</span></div>
+                                <div class="flex justify-between"><span class="text-gray-400">Produk:</span><span class="font-semibold">{{ $transaction->product->title ?? 'Produk Dihapus' }}</span></div>
+                                <div class="flex justify-between"><span class="text-gray-400">Pembeli:</span><span class="font-semibold">{{ $transaction->user->name ?? 'User Dihapus' }}</span></div>
+                                <div class="flex justify-between"><span class="text-gray-400">Jumlah:</span><span class="font-semibold">{{ $transaction->quantity }}</span></div>
+                                <div class="flex justify-between"><span class="text-gray-400">Total Harga:</span><span class="font-semibold">Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</span></div>
                                 <div class="flex justify-between md:col-span-2"><span class="text-gray-400">Tanggal Transaksi:</span><span class="font-semibold">{{ \Carbon\Carbon::parse($transaction->created_at)->translatedFormat('d F Y, H:i') }}</span></div>
                             </div>
                         </div>

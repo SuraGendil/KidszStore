@@ -38,7 +38,7 @@
     <header class="fixed top-0 left-0 right-0 z-50 w-full px-4 sm:px-8 py-3 flex flex-col sm:flex-row items-center justify-between bg-[#0e1a4b] text-white" aria-label="Situs Navigasi Utama">
         <!-- Logo and Site Title -->
         <a href="#" class="flex items-center gap-3 shrink-0 mb-2 sm:mb-0" aria-label="KIDSZSTORE Beranda">
-            <img src="https://placehold.co/40x40/1A255B/ffffff?text=KS" alt="KIDSZSTORE Logo" class="h-10 w-10 rounded-full object-cover">
+            <img src="{{ asset('images/logo-KidszStore.png') }}" alt="KIDSZSTORE Logo" class="h-10 w-10 rounded-full object-cover">
             <span class="text-2xl font-bold">KIDSZSTORE</span>
         </a>
 
@@ -79,12 +79,6 @@
                     <i class="fa-brands fa-discord" aria-hidden="true"></i>
                 </a>
             </div>
-            <a href="#" class="px-6 py-2 bg-white text-[#0e1a4b] rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors duration-200">
-                Masuk
-            </a>
-            <a href="#" class="px-6 py-2 bg-[#17307a] text-white rounded-lg text-sm font-semibold hover:bg-[#22308a] transition-colors duration-200">
-                Daftar
-            </a>
         </div>
     </header>
     <!-- End Header Section -->
@@ -93,7 +87,6 @@
     <div class="flex min-h-screen pt-32 sm:pt-16"> <!-- pt-32 for mobile header offset, pt-16 for desktop -->
         <!-- Sidebar Navigation -->
         <aside class="w-64 bg-[#1A255B] shadow-lg flex-col justify-between hidden md:flex">
-            <!-- Admin Navigation Menu -->
             <nav class="mt-8 px-2">
                 <h3 class="uppercase text-gray-500 font-semibold text-xs mt-4 px-4 mb-2">Menu</h3>
                 <ul class="space-y-1">
@@ -110,9 +103,21 @@
                         </a>
                     </li>
                     <li>
+                        <a href="#" id="nav-popular" class="flex items-center p-3 rounded-lg transition-colors duration-200 text-gray-300 hover:bg-slate-700 hover:text-white" onclick="showContent('popular', this)">
+                            <i class="fa-solid fa-star w-5 h-5 mr-3" aria-hidden="true"></i>
+                            Populer
+                        </a>
+                    </li>
+                    <li>
                         <a href="#" id="nav-games" class="flex items-center p-3 rounded-lg transition-colors duration-200 text-gray-300 hover:bg-slate-700 hover:text-white" onclick="showContent('games', this)">
                             <i class="fa-solid fa-gamepad w-5 h-5 mr-3" aria-hidden="true"></i>
                             Games
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" id="nav-categories" class="flex items-center p-3 rounded-lg transition-colors duration-200 text-gray-300 hover:bg-slate-700 hover:text-white" onclick="showContent('categories', this)">
+                            <i class="fa-solid fa-tags w-5 h-5 mr-3" aria-hidden="true"></i>
+                            Kategori
                         </a>
                     </li>
                     <li>
@@ -291,13 +296,13 @@
                         <input type="text" placeholder="Cari nama produk..." 
                             class="pl-8 py-2 w-full text-sm border-2 border-gray-700 bg-[#0e1a4b] text-white placeholder-gray-400 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400">
                     </div>
-                    <select class="p-2 border border-gray-700 bg-[#0e1a4b] text-white rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-400">
-                        <option>Kategori</option>
-                        <option>Joki CDIC</option>
-                        <option>GAMEPASS CIDC</option>
-                        <option>Joki DR</option>
+                    <select class="p-2 border border-gray-700 bg-[#0e1a4b] text-white rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 w-full md:w-auto">
+                        <option value="">Semua Kategori</option>
+                        @foreach($allCategoriesForFilter as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
                     </select>
-                    <select class="p-2 border border-gray-700 bg-[#0e1a4b] text-white rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-400">
+                    <select class="p-2 border border-gray-700 bg-[#0e1a4b] text-white rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 w-full md:w-auto">
                         <option>Status</option>
                         <option>Aktif</option>
                         <option>Non-aktif</option>
@@ -314,6 +319,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Gambar</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Nama Produk</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Kategori</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Games</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Stok</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Terjual</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Harga</th>
@@ -329,7 +335,8 @@
                                         <img class="h-10 w-10 rounded-lg object-cover" src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->title }}">
                                     </td> 
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-white">{{ $product->title }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $product->category }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $product->category->name ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $product->game->name ?? 'N/A' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $product->stock }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $product->sold_count ?? 0 }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-white font-semibold">Rp{{ number_format($product->price, 0, ',', '.') }}</td> 
@@ -369,7 +376,7 @@
                                 </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="9" class="px-6 py-4 text-center text-gray-400">Tidak ada produk yang ditemukan.</td>
+                                        <td colspan="10" class="px-6 py-4 text-center text-gray-400">Tidak ada produk yang ditemukan.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -406,6 +413,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">No</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Image</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Nama Game</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Status</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
@@ -414,9 +422,24 @@
                                 <tr class="hover:bg-gray-700 transition-colors duration-200">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $loop->iteration }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <img class="h-10 w-16 rounded-lg object-contain bg-gray-700 p-1" src="{{ $game->image_url ?? asset('images/logo_CDID.png') }}" alt="{{ $game->name }}">
+                                        @if ($game->image)
+                                            <img class="h-10 w-16 rounded-lg object-contain bg-gray-700 p-1" src="{{ asset('storage/' . $game->image) }}" alt="{{ $game->name }}">
+                                        @else
+                                            <img class="h-10 w-16 rounded-lg object-contain bg-gray-700 p-1" src="https://placehold.co/64x40/1A255B/ffffff?text=No+Img" alt="No Image">
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-white">{{ $game->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if ($game->status)
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-500 bg-opacity-20 text-green-400 items-center">
+                                                <span class="w-2 h-2 rounded-full bg-green-400 mr-1"></span> Aktif
+                                            </span>
+                                        @else
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-500 bg-opacity-20 text-red-400 items-center">
+                                                <span class="w-2 h-2 rounded-full bg-red-400 mr-1"></span> Non-aktif
+                                            </span>
+                                        @endif
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div class="flex space-x-2">
                                             <a href="{{ route('admin.games.edit', $game->id) }}" class="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-200" title="Edit Game"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.5-1.5l-6-6m2-2a2 2 0 112.828 2.828L13.828 15H11.5v2.5l2.5-2.5z" /></svg></a>
@@ -430,8 +453,142 @@
                                 </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="px-6 py-4 text-center text-gray-400">Tidak ada game yang ditemukan.</td>
+                                        <td colspan="5" class="px-6 py-4 text-center text-gray-400">Tidak ada game yang ditemukan.</td>
                                     </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pagination for Games -->
+                <div class="mt-6">
+                    {{ $games->links() }}
+                </div>
+            </div>
+
+            <div id="content-popular" class="content-section hidden">
+                <h1 class="text-3xl font-bold text-white mb-6">Manajemen Populer</h1>
+
+                <div class="bg-[#1A255B] rounded-lg shadow-xl overflow-hidden border border-gray-700">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-700">
+                            <thead class="bg-gray-800">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">No</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Image</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Title</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Game</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Kategori</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Stok</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Terjual</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Harga</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-700">
+                                @forelse ($popularProducts as $product)
+                                <tr class="hover:bg-gray-700 transition-colors duration-200">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $loop->iteration }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if ($product->image)
+                                            <img class="h-10 w-16 rounded-lg object-contain bg-gray-700 p-1" src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->title }}">
+                                        @else
+                                            <img class="h-10 w-16 rounded-lg object-contain bg-gray-700 p-1" src="https://placehold.co/64x40/1A255B/ffffff?text=No+Img" alt="No Image">
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-white">{{ $product->title }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $product->game->name ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $product->category->name ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $product->stock }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $product->sold_count }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if ($product->status)
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-500 bg-opacity-20 text-green-400 items-center">
+                                                <span class="w-2 h-2 rounded-full bg-green-400 mr-1"></span> Aktif
+                                            </span>
+                                        @else
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-500 bg-opacity-20 text-red-400 items-center">
+                                                <span class="w-2 h-2 rounded-full bg-red-400 mr-1"></span> Non-aktif
+                                            </span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="9" class="px-6 py-4 text-center text-gray-400">Tidak ada produk populer yang ditemukan.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content for Categories Management -->
+            <div id="content-categories" class="content-section hidden">
+                <h1 class="text-3xl font-bold text-white mb-6">Manajemen Kategori Produk</h1>
+
+                <div class="mb-6">
+                    <a href="{{ route('admin.categories.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center transition-colors duration-200 w-max" aria-label="Tambah Kategori Baru">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Tambah Kategori
+                    </a>
+                </div>
+
+                <div class="bg-[#1A255B] rounded-lg shadow-xl overflow-hidden border border-gray-700">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-700">
+                            <thead class="bg-gray-800">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">No</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Nama Kategori</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Games</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-700">
+                                @forelse ($categories as $category)
+                                <tr class="hover:bg-gray-700 transition-colors duration-200">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $loop->iteration }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-white">{{ $category->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $category->game->name ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                                        @if ($category->status)
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-500 bg-opacity-20 text-green-400 items-center">
+                                                <span class="w-2 h-2 rounded-full bg-green-400 mr-1"></span> Aktif
+                                            </span>
+                                        @else
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-500 bg-opacity-20 text-red-400 items-center">
+                                                <span class="w-2 h-2 rounded-full bg-red-400 mr-1"></span> Non-aktif
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center space-x-2">
+                                        <a href="{{ route('admin.categories.edit', $category->id) }}" class="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-200" title="Edit Kategori">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.5-1.5l-6-6m2-2a2 2 0 112.828 2.828L13.828 15H11.5v2.5l2.5-2.5z" />
+                                            </svg>
+                                        </a>
+                                        <form action="{{ route('admin.categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kategori ini?');" class="inline-block">
+                                            @csrf
+                                            @method('DELETE') {{-- Menambahkan @method('DELETE') untuk standar RESTful --}}
+                                            <button type="submit" class="p-2 text-gray-300 hover:bg-red-600 hover:text-white rounded-md transition-colors duration-200" title="Hapus Kategori">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center text-gray-400">Tidak ada kategori yang ditemukan.</td>
+                                </tr>
                                 @endforelse
                             </tbody>
                         </table>

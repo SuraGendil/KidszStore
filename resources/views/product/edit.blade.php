@@ -44,6 +44,25 @@
                 <input type="text" name="title" id="title" value="{{ old('title', $product->title) }}" class="shadow appearance-none border border-gray-700 rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline bg-[#0e1a4b]" required>
             </div>
             <div class="mb-4">
+                <label for="game_id" class="block text-gray-300 text-sm font-bold mb-2">Game</label>
+                <select name="game_id" id="game_id" class="shadow appearance-none border border-gray-700 rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline bg-[#0e1a4b]" required>
+                    <option value="">-- Pilih Game --</option>
+                    @foreach($games as $game)
+                        <option value="{{ $game->id }}" {{ old('game_id', $product->game_id) == $game->id ? 'selected' : '' }}>{{ $game->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="category_id" class="block text-gray-300 text-sm font-bold mb-2">Kategori</label>
+                <select name="category_id" id="category_id" class="shadow appearance-none border border-gray-700 rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline bg-[#0e1a4b]" required>
+                    <option value="">-- Pilih Kategori --</option>
+                    @foreach($categories as $category)
+                        {{-- Menampilkan nama game di samping kategori untuk mempermudah pemilihan --}}
+                        <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->game->name ?? 'Game tidak diketahui' }})</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="mb-4">
                 <label for="image" class="block text-gray-300 text-sm font-bold mb-2">Gambar Produk Saat Ini</label>
                 @if ($product->image)
                     <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->title }}" class="mb-2 max-h-40 rounded-lg">

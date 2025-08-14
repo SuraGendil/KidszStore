@@ -10,14 +10,10 @@ class Product extends Model
 {
     use HasFactory;
 
-    /**
-     * Kolom yang dapat diisi secara massal.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
+        'game_id',
+        'category_id',
         'title',
-        'category',
         'image',
         'stock',
         'sold_count',
@@ -40,5 +36,22 @@ class Product extends Model
     public function getImageUrlAttribute(): ?string
     {
         return $this->image ? Storage::url($this->image) : null;
+    }
+
+    /**
+     * Mendefinisikan relasi bahwa Product ini 'milik' satu Game.
+     */
+    public function game()
+    {
+        // belongsTo(NamaModel, 'foreign_key', 'owner_key')
+        return $this->belongsTo(Game::class);
+    }
+
+    /**
+     * Mendefinisikan relasi bahwa Product ini 'milik' satu Category.
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

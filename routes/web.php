@@ -1,17 +1,20 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SlideController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\SlideController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController;
-use App\Models\Slide;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 // Halaman depan
-Route::get('/', [SlideController::class, 'publicIndex'])->name('welcome');
+Route::get('/', [HomeController::class, 'index'])->name('welcome');
 
 // Rute untuk menampilkan detail produk (oleh pengguna publik)
 Route::get('/product/{product}', [ProductController::class, 'show'])->name('product.show');
@@ -21,10 +24,7 @@ Route::get('/cek-transaksi', [TransactionController::class, 'index'])->name('tra
 Route::get('/cek-transaksi/check', [TransactionController::class, 'check'])->name('transaction.check');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        $slides = Slide::all();
-        return view('dashboard', ['slides' => $slides]);
-    })->name('dashboard');
+    Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
     // Profil pengguna
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -34,19 +34,32 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard Admin
-    Route::get('/dashboard', [SlideController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // CRUD Slide
     Route::resource('slides', SlideController::class)->except(['index', 'show']);
 
-    // CRUD Product pakai ProductController biasa
+    // CRUD Product
     Route::resource('products', ProductController::class)->except(['show']);
+
+    // CRUD Game
+    Route::resource('games', GameController::class)->except(['show']);
+
+    // CRUD Category
+    Route::resource('categories', CategoriesController::class)->except(['show']);
 
     // CRUD Order
     Route::resource('orders', OrderController::class)->except(['create', 'store', 'show']);
 
     // CRUD User
     Route::resource('users', UserController::class)->except(['show']);
+
+    Route::get('/product/{product}', [ProductController::class, 'show'])->name('product.show');
 });
+
+Route::post('/payment/process', [PaymentController::class, 'process'])->name('payment.process')->middleware('auth');
+
+// Route untuk menerima notifikasi dari Midtrans (Webhook)
+Route::post('/midtrans/notification', [PaymentController::class, 'notificationHandler'])->name('midtrans.notification');
 
 require __DIR__ . '/auth.php';

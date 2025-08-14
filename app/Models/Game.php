@@ -13,6 +13,7 @@ class Game extends Model
     protected $fillable = [
         'name',
         'image',
+        'status',
     ];
 
     protected $appends = ['image_url'];
@@ -25,5 +26,13 @@ class Game extends Model
     public function getImageUrlAttribute(): ?string
     {
         return $this->image ? Storage::url($this->image) : null;
+    }
+
+    /**
+     * Mendefinisikan relasi bahwa Game ini 'memiliki banyak' Product.
+     */
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }
