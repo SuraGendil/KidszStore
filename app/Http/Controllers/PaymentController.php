@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Order;
 use Midtrans\Config;
 use Midtrans\Snap;
+use App\Models\Progress;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -16,134 +17,189 @@ class PaymentController extends Controller
 {
     public function __construct()
     {
-        // Set konfigurasi Midtrans dari config/services.php
+        // Ambil konfigurasi dari config/services.php
         Config::$serverKey = config('services.midtrans.server_key');
-        Config::$isProduction = config('services.midtrans.is_production');
+        Config::$isProduction = (bool) config('services.midtrans.is_production');
         Config::$isSanitized = true;
         Config::$is3ds = true;
     }
 
+    /**
+     * Proses pembuatan transaksi Midtrans
+     */
     public function process(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
+            'quantity'   => 'required|integer|min:1',
         ]);
 
-        $product = Product::findOrFail($request->product_id);
-        $quantity = $request->quantity;
-        
-        // Gunakan Auth Facade dan lakukan pengecekan untuk memastikan user telah login.
-        // Ini adalah praktik yang baik meskipun sudah ada middleware.
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Anda harus masuk untuk melanjutkan pembayaran.');
+            return response()->json(['error' => 'Anda harus masuk untuk melanjutkan pembayaran.'], 401);
         }
-        $user = Auth::user();
 
-        // Cek stok produk
+        $user     = Auth::user();
+        $product  = Product::findOrFail($validated['product_id']);
+        $quantity = $validated['quantity'];
+
+        // Cek stok
         if ($product->stock < $quantity) {
-            return back()->with('error', 'Stok produk tidak mencukupi.');
+            return response()->json(['error' => 'Stok produk tidak mencukupi.'], 400);
         }
 
-        // Buat order baru di database dengan status 'pending'
+        // Ambil ID untuk status 'Pending'
+        $pendingProgressId = Progress::where('name', 'Pending')->value('id');
+
+        // Buat order baru
         $order = Order::create([
-            'user_id' => $user->id, // User yang sedang login
-            'product_id' => $product->id,
-            'quantity' => $quantity,
+            'user_id'     => $user->id,
+            'product_id'  => $product->id,
+            'quantity'    => $quantity,
             'total_price' => $product->price * $quantity,
-            'status' => 'pending',
-            'order_id' => 'KIDSZ-' . Str::uuid(), // Generate a more robust unique Order ID
+            'status'      => 'pending', // Status untuk Midtrans
+            'progress_id' => $pendingProgressId, // Status progres untuk user
+            'order_id'    => 'KIDSZ-' . Str::uuid(),
         ]);
 
-        // Siapkan parameter untuk Midtrans
+        // Parameter untuk Midtrans
         $params = [
             'transaction_details' => [
-                'order_id' => $order->order_id,
-                'gross_amount' => (int) $order->total_price, // Midtrans memerlukan integer
+                'order_id'     => $order->order_id,
+                'gross_amount' => (int) $order->total_price,
             ],
             'item_details' => [[
-                'id' => $product->id,
-                'price' => (int) $product->price, // Midtrans memerlukan integer
+                'id'       => $product->id,
+                'price'    => (int) $product->price,
                 'quantity' => $quantity,
-                'name' => $product->title,
+                'name'     => $product->title,
             ]],
             'customer_details' => [
                 'first_name' => $user->name,
-                'email' => $user->email,
+                'email'      => $user->email,
             ],
         ];
 
         try {
-            // Dapatkan Snap Token dari Midtrans
             $snapToken = Snap::getSnapToken($params);
 
-            // Simpan snap token ke order
-            $order->snap_token = $snapToken;
-            $order->save();
+            // Simpan snap token
+            $order->update(['snap_token' => $snapToken]);
 
-            // Redirect ke halaman checkout
-            return view('payment.checkout', compact('snapToken', 'order'));
+            // Ambil nomor WhatsApp admin
+            $rawAdminPhone = config('services.whatsapp.admin_phone');
+
+            // Normalisasi nomor (hapus simbol, ubah awalan 0 → 62)
+            $normalizedAdminPhone = preg_replace('/\D/', '', $rawAdminPhone);
+            if (str_starts_with($normalizedAdminPhone, '0')) {
+                $normalizedAdminPhone = '62' . substr($normalizedAdminPhone, 1);
+            }
+
+            $waMessage = "Halo Admin KIDSZSTORE,\n\n"
+                . "Saya ingin konfirmasi pembayaran untuk pesanan berikut:\n\n"
+                . "ID Pesanan: *{$order->order_id}*\n"
+                . "Produk: *{$product->title}*\n"
+                . "Total Bayar: *Rp " . number_format($order->total_price, 0, ',', '.') . "*\n\n";
+
+            $categoryName = strtolower($product->category->name ?? '');
+
+            if (str_contains($categoryName, 'gamepass')) {
+                $waMessage .= "------------------------------------\n"
+                    . "Mohon lengkapi data berikut untuk pesanan *Gamepass* Anda:\n\n"
+                    . "Username Roblox: \n\n"; // Diberi baris baru agar mudah diisi oleh pelanggan
+
+            } elseif (str_contains($categoryName, 'joki')) {
+                $waMessage .= "------------------------------------\n"
+                    . "Mohon lengkapi data berikut untuk pesanan *Joki* Anda:\n\n"
+                    . "Username Roblox: \n"
+                    . "Password Roblox: \n\n";
+            }
+
+            $waMessage .= "Mohon segera diproses. Terima kasih!";
+
+            return response()->json([
+                'snap_token' => $snapToken,
+                'order' => [
+                    'order_id'      => $order->order_id,
+                    'product_title' => $product->title,
+                    'total_price'   => $order->total_price,
+                ],
+                'whatsapp' => [
+                    'phone'   => $normalizedAdminPhone,
+                    'message' => $waMessage,
+                ],
+            ]);
         } catch (\Exception $e) {
-            // Log error untuk mempermudah debugging di server
-            Log::error('Midtrans Snap Token Error: ' . $e->getMessage());
-            // Beri pesan error yang lebih umum ke pengguna
-            return back()->with('error', 'Gagal memulai sesi pembayaran. Silakan coba lagi nanti.');
+            Log::error('Midtrans Snap Token Error', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Gagal memproses pembayaran, coba lagi.'], 500);
         }
     }
 
     /**
-     * Handle notifikasi dari Midtrans (Webhook).
+     * Handler notifikasi dari Midtrans
      */
     public function notificationHandler(Request $request)
     {
-        $notification = json_decode($request->getContent());
+        $notification = json_decode($request->getContent(), false);
 
-        // Verifikasi signature key
-        $signatureKey = hash('sha512', $notification->order_id . $notification->status_code . $notification->gross_amount . config('services.midtrans.server_key'));
+        if (
+            !isset($notification->order_id, $notification->status_code, $notification->gross_amount, $notification->signature_key)
+        ) {
+            Log::warning('Midtrans notification invalid structure', ['payload' => $request->all()]);
+            return response()->json(['message' => 'Invalid payload'], 400);
+        }
 
-        if ($notification->signature_key != $signatureKey) {
-            Log::warning('Midtrans notification signature mismatch.', ['order_id' => $notification->order_id]);
+        // Validasi signature
+        $expectedSignature = hash(
+            'sha512',
+            $notification->order_id .
+                $notification->status_code .
+                $notification->gross_amount .
+                config('services.midtrans.server_key')
+        );
+
+        if (!hash_equals($expectedSignature, $notification->signature_key)) {
+            Log::warning('Midtrans signature mismatch', ['order_id' => $notification->order_id]);
             return response()->json(['message' => 'Invalid signature'], 403);
         }
 
-        // Temukan order berdasarkan order_id
         $order = Order::where('order_id', $notification->order_id)->first();
 
         if (!$order) {
-            Log::error('Order not found for Midtrans notification.', ['order_id' => $notification->order_id]);
+            Log::error('Order not found', ['order_id' => $notification->order_id]);
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        // Gunakan transaction status dari notifikasi
         $transactionStatus = $notification->transaction_status;
 
-        // Gunakan DB Transaction untuk memastikan integritas data
-        DB::transaction(function () use ($transactionStatus, $order) {
-            if ($transactionStatus == 'settlement') {
-                // Status pembayaran berhasil
-                if ($order->status == 'pending') {
-                    $order->status = 'success';
-                    $order->save();
+        // Ambil ID untuk status progres yang relevan
+        $onProgressId = Progress::where('name', 'On Progress')->value('id');
+        $failedId = Progress::where('name', 'Failed')->value('id');
 
-                    // Kurangi stok produk
-                    $product = $order->product;
-                    if ($product) {
-                        $product->stock -= $order->quantity;
-                        $product->sold_count += $order->quantity;
-                        $product->save();
+        DB::transaction(function () use ($transactionStatus, $order, $onProgressId, $failedId) {
+            if ($transactionStatus === 'settlement') {
+                if ($order->status === 'pending') {
+                    $order->update([
+                        'status' => 'success',
+                        'progress_id' => $onProgressId, // Pembayaran berhasil, pesanan masuk ke 'On Progress'
+                    ]);
+
+                    // Update stok & sold_count
+                    if ($order->product) {
+                        $order->product->decrement('stock', $order->quantity);
+                        $order->product->increment('sold_count', $order->quantity);
                     }
                 }
             } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
-                // Status pembayaran gagal, dibatalkan, atau kedaluwarsa
-                $order->status = 'failed';
-                $order->save();
+                $order->update([
+                    'status' => 'failed',
+                    'progress_id' => $failedId, // Pembayaran gagal, pesanan masuk ke 'Failed'
+                ]);
             }
         });
 
-        // Beri respons OK ke Midtrans
         return response()->json([
-            'status' => 'success',
-            'message' => 'Notification handled successfully.'
+            'status'  => 'success',
+            'message' => 'Notification handled successfully'
         ]);
     }
 }

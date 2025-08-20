@@ -598,29 +598,152 @@
 
             <!-- Content for Orders Management -->
             <div id="content-orders" class="content-section hidden">
-                <h1 class="text-3xl font-bold text-white mb-6">Daftar Pesanan</h1>
-                <div class="bg-[#1A255B] p-6 rounded-lg shadow-xl border border-gray-700 text-gray-300">
-                    <p class="mb-4">Berikut adalah daftar pesanan terbaru:</p>
-                    <ul class="list-disc list-inside space-y-2">
-                        <li>Pesanan #1001 - Robux 100 - Selesai</li>
-                        <li>Pesanan #1002 - Diamond ML 100 - Diproses</li>
-                        <li>Pesanan #1003 - Robux 200 - Menunggu Pembayaran</li>
-                    </ul>
-                    <button class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">Lihat Semua Pesanan</button>
+                <h1 class="text-3xl font-bold text-white mb-6">Manajemen Pesanan</h1>
+
+                <!-- Orders Table -->
+                <div class="bg-[#1A255B] rounded-lg shadow-xl overflow-hidden border border-gray-700">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-700">
+                            <thead class="bg-gray-800">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">ID Pesanan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Pelanggan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Produk</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Total</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Progres</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-700">
+                                @forelse ($orders as $order)
+                                <tr class="hover:bg-gray-700 transition-colors duration-200">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{{ $order->order_id }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $order->user->name ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ Str::limit($order->product->title ?? 'Produk Dihapus', 30) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-white font-semibold">Rp {{ number_format($order->total_price, 0, ',', '.') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $order->status ?? 'Produk Dihapus' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm capitalize">
+                                        @if($order->progress)
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                                @switch($order->progress->color)
+                                                    @case('yellow') bg-yellow-500/20 text-yellow-400 @break
+                                                    @case('blue') bg-blue-500/20 text-blue-400 @break
+                                                    @case('green') bg-green-500/20 text-green-400 @break
+                                                    @case('red') bg-red-500/20 text-red-400 @break
+                                                    @default bg-gray-500/20 text-gray-400
+                                                @endswitch
+                                            ">
+                                                {{ $order->progress->name }}
+                                            </span>
+                                        @else
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-500/20 text-gray-400">
+                                                {{ $order->status }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{ $order->created_at->format('d M Y, H:i') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center space-x-2">
+                                        <a href="{{ route('admin.orders.edit', $order->id) }}" class="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-200" title="Edit Kategori">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.5-1.5l-6-6m2-2a2 2 0 112.828 2.828L13.828 15H11.5v2.5l2.5-2.5z" />
+                                            </svg>
+                                        </a>
+                                        <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kategori ini?');" class="inline-block">
+                                            @csrf
+                                            @method('DELETE') {{-- Menambahkan @method('DELETE') untuk standar RESTful --}}
+                                            <button type="submit" class="p-2 text-gray-300 hover:bg-red-600 hover:text-white rounded-md transition-colors duration-200" title="Hapus Kategori">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="px-6 py-4 text-center text-gray-400">Tidak ada pesanan yang ditemukan.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="mt-6">
+                    {{ $orders->links() }}
                 </div>
             </div>
 
             <!-- Content for Users Management -->
             <div id="content-users" class="content-section hidden">
                 <h1 class="text-3xl font-bold text-white mb-6">Manajemen Pengguna</h1>
-                <div class="bg-[#1A255B] p-6 rounded-lg shadow-xl border border-gray-700 text-gray-300">
-                    <p class="mb-4">Kelola daftar pengguna terdaftar di sini:</p>
-                    <ul class="list-disc list-inside space-y-2">
-                        <li>Pengguna: John Doe (Aktif)</li>
-                        <li>Pengguna: Jane Smith (Aktif)</li>
-                        <li>Pengguna: Peter Jones (Non-aktif)</li>
-                    </ul>
-                    <button class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">Tambah Pengguna Baru</button>
+                <!-- Users Table -->
+                <div class="bg-[#1A255B] rounded-lg shadow-xl overflow-hidden border border-gray-700">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-700">
+                            <thead class="bg-gray-800">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Nama</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Telepon</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Role</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Tanggal Daftar</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-700">
+                                @forelse ($users as $user)
+                                <tr class="hover:bg-gray-700 transition-colors duration-200">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $user->id }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{{ $user->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $user->email }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $user->phone ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        @if($user->is_admin)
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-500/20 text-purple-400">
+                                                Admin
+                                            </span>
+                                        @else
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-cyan-500/20 text-cyan-400">
+                                                User
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{{ $user->created_at->format('d M Y') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center space-x-2">
+                                        <a href="{{ route('admin.users.edit', $user->id) }}" class="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-200" title="Edit Kategori">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.5-1.5l-6-6m2-2a2 2 0 112.828 2.828L13.828 15H11.5v2.5l2.5-2.5z" />
+                                            </svg>
+                                        </a>
+                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus user ini?');" class="inline-block">
+                                            @csrf
+                                            @method('DELETE') {{-- Menambahkan @method('DELETE') untuk standar RESTful --}}
+                                            <button type="submit" class="p-2 text-gray-300 hover:bg-red-600 hover:text-white rounded-md transition-colors duration-200" title="Hapus Kategori">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="px-6 py-4 text-center text-gray-400">Tidak ada pengguna yang ditemukan.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="mt-6">
+                    {{ $users->links() }}
                 </div>
             </div>
         </main>

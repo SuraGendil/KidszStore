@@ -16,8 +16,13 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+        // Ambil data order dengan relasi produk dan progres, urutkan dari yang terbaru, dan gunakan paginasi
+        $orders = $user->orders()->with(['product', 'progress'])->latest()->paginate(10);
+
         return view('profile.edit', [
             'user' => $request->user(),
+            'orders' => $orders,
         ]);
     }
 

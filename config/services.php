@@ -37,14 +37,13 @@ return [
 
 
     'midtrans' => [
-        'client_key' => env('MIDTRANS_CLIENT_KEY'),
         'server_key' => env('MIDTRANS_SERVER_KEY'),
-        'is_production' => env('MIDTRANS_IS_PRODUCTION', false),
+        'client_key' => env('MIDTRANS_CLIENT_KEY'),
+        'is_production' => (bool) env('MIDTRANS_IS_PRODUCTION', false),
     ],
 
     'whatsapp' => [
-        // Nomor WhatsApp untuk pemesanan (gunakan format 62xxxx tanpa + atau 0 di depan)
-        'number' => env('WHATSAPP_NUMBER', '6281380207365'), // Ganti dengan nomor Anda di file .env
+        'admin_phone' => env('WHATSAPP_ADMIN_PHONE', '6281380207365'),
     ],
 
 ];

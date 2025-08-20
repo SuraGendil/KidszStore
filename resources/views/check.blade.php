@@ -40,18 +40,29 @@
                                     <h3 class="text-xl font-bold">Detail Transaksi</h3>
                                     <p class="text-gray-400 text-sm">Kode: <span class="font-mono">{{ $transaction->order_id }}</span></p>
                                 </div>
-                                <span class="mt-2 sm:mt-0 px-3 py-1 text-sm font-semibold rounded-full
-                                    {{ $transaction->status === 'success' ? 'bg-green-500/20 text-green-300' :
-                                       ($transaction->status === 'pending' ? 'bg-yellow-500/20 text-yellow-300' :
-                                       'bg-red-500/20 text-red-300') }}">
-                                    {{ ucfirst($transaction->status) }}
-                                </span>
                             </div>
                             <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-sm">
                                 <div class="flex justify-between"><span class="text-gray-400">Produk:</span><span class="font-semibold">{{ $transaction->product->title ?? 'Produk Dihapus' }}</span></div>
                                 <div class="flex justify-between"><span class="text-gray-400">Pembeli:</span><span class="font-semibold">{{ $transaction->user->name ?? 'User Dihapus' }}</span></div>
                                 <div class="flex justify-between"><span class="text-gray-400">Jumlah:</span><span class="font-semibold">{{ $transaction->quantity }}</span></div>
                                 <div class="flex justify-between"><span class="text-gray-400">Total Harga:</span><span class="font-semibold">Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</span></div>
+                                <div class="flex justify-between items-center md:col-span-2"><span class="text-gray-400">Status Pembayaran:</span><span class="font-semibold capitalize">{{ $transaction->status }}</span></div>
+                                <div class="flex justify-between items-center md:col-span-2">
+                                    <span class="text-gray-400">Progres Pesanan:</span>
+                                    @if($transaction->progress)
+                                        <span class="px-3 py-1 text-xs font-semibold rounded-full
+                                            @switch($transaction->progress->color)
+                                                @case('yellow') bg-yellow-500/20 text-yellow-300 @break
+                                                @case('blue') bg-blue-500/20 text-blue-400 @break
+                                                @case('green') bg-green-500/20 text-green-300 @break
+                                                @case('red') bg-red-500/20 text-red-400 @break
+                                                @default bg-gray-500/20 text-gray-400
+                                            @endswitch
+                                        ">{{ $transaction->progress->name }}</span>
+                                    @else
+                                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-gray-500/20 text-gray-400">Menunggu Pembayaran</span>
+                                    @endif
+                                </div>
                                 <div class="flex justify-between md:col-span-2"><span class="text-gray-400">Tanggal Transaksi:</span><span class="font-semibold">{{ \Carbon\Carbon::parse($transaction->created_at)->translatedFormat('d F Y, H:i') }}</span></div>
                             </div>
                         </div>

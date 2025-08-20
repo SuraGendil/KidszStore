@@ -17,6 +17,7 @@ class Order extends Model
         'total_price',
         'status',
         'snap_token',
+        'progress_id',
     ];
 
     public function product()
@@ -27,5 +28,10 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function progress()
+    {
+        return $this->belongsTo(Progress::class);
     }
 }
