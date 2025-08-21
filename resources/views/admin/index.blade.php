@@ -37,7 +37,7 @@
     <!-- Header Section -->
     <header class="fixed top-0 left-0 right-0 z-50 w-full px-4 sm:px-8 py-3 flex flex-col sm:flex-row items-center justify-between bg-[#0e1a4b] text-white" aria-label="Situs Navigasi Utama">
         <!-- Logo and Site Title -->
-        <a href="#" class="flex items-center gap-3 shrink-0 mb-2 sm:mb-0" aria-label="KIDSZSTORE Beranda">
+        <a href="/" class="flex items-center gap-3 shrink-0 mb-2 sm:mb-0" aria-label="KIDSZSTORE Beranda">
             <img src="{{ asset('images/logo-KidszStore.png') }}" alt="KIDSZSTORE Logo" class="h-10 w-10 rounded-full object-cover">
             <span class="text-2xl font-bold">KIDSZSTORE</span>
         </a>
@@ -69,10 +69,10 @@
         <!-- User Actions / Social Media Links -->
         <div class="flex items-center gap-4 flex-wrap justify-center sm:justify-end">
             <div class="flex items-center gap-3" role="group" aria-label="Tautan Media Sosial">
-                <a href="#" class="text-green-400 text-xl hover:text-green-300 transition-colors duration-200" title="WhatsApp" aria-label="Kunjungi WhatsApp KIDSZSTORE">
+                <a href="https://wa.me/6281234567890" class="text-green-400 text-xl hover:text-green-300 transition-colors duration-200" title="WhatsApp" aria-label="Kunjungi WhatsApp KIDSZSTORE">
                     <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
                 </a>
-                <a href="#" class="text-pink-400 text-xl hover:text-pink-300 transition-colors duration-200" title="Instagram" aria-label="Kunjungi Instagram KIDSZSTORE">
+                <a href="https://www.instagram.com/kidsz.id" class="text-pink-400 text-xl hover:text-pink-300 transition-colors duration-200" title="Instagram" aria-label="Kunjungi Instagram KIDSZSTORE">
                     <i class="fa-brands fa-instagram" aria-hidden="true"></i>
                 </a>
                 <a href="#" class="text-indigo-400 text-xl hover:text-indigo-300 transition-colors duration-200" title="Discord" aria-label="Bergabung ke Discord KIDSZSTORE">
@@ -147,42 +147,12 @@
             <div id="content-slides" class="content-section">
                 <h1 class="text-3xl font-bold text-white mb-6">Manajemen Slides</h1>
                 <div class="flex flex-wrap items-center space-x-2 sm:space-x-4 mb-6">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-sm text-gray-400 hidden sm:inline-block">Tampilkan:</span>
-                        <select class="border border-gray-700 bg-[#1A255B] text-white text-sm rounded-md py-1 px-2 focus:outline-none focus:ring-1 focus:ring-blue-400">
-                            <option>Semua Slide</option>
-                            <option>Aktif</option>
-                            <option>Non-aktif</option>
-                        </select>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-sm text-gray-400 hidden sm:inline-block">Urutkan:</span>
-                        <select class="border border-gray-700 bg-[#1A255B] text-white text-sm rounded-md py-1 px-2 focus:outline-none focus:ring-1 focus:ring-blue-400">
-                            <option>Terbaru</option>
-                            <option>Nama A-Z</option>
-                        </select>
-                    </div>
                     <a href="{{ route('admin.slides.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center transition-colors duration-200" aria-label="Tambah Slide">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>
                         Tambah Slide
                     </a>
-                </div>
-
-                <!-- Search & Filter for Slides -->
-                <div class="bg-[#1A255B] p-4 rounded-lg shadow-sm border border-gray-700 mb-6 flex flex-wrap items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <div class="relative flex-1 w-full md:w-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <input type="text" placeholder="Cari nama slide atau deskripsi..." class="pl-8 py-2 w-full text-sm border-2 border-700 bg-[#0e1a4b] text-white placeholder-gray-400 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400">
-                    </div>
-                    <select class="p-2 border border-gray-700 bg-[#0e1a4b] text-white rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-400">
-                        <option>Status</option>
-                        <option>Aktif</option>
-                        <option>Non-aktif</option>
-                    </select>
                 </div>
 
                 <!-- Slides Table -->
@@ -251,8 +221,6 @@
                         </table>
                     </div>
                 </div>
-
-                <!-- Pagination for Slides -->
                 <div class="mt-6">
                     {{ $slides->links() }}
                 </div>
@@ -263,20 +231,6 @@
                 <h1 class="text-3xl font-bold text-white mb-6">Daftar Produk</h1>
 
                 <div class="flex flex-wrap items-center space-x-2 sm:space-x-4 mb-6">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-sm text-gray-400 hidden sm:inline-block">Tampilkan:</span>
-                        <select class="border border-gray-700 bg-[#1A255B] text-white text-sm rounded-md py-1 px-2 focus:outline-none focus:ring-1 focus:ring-blue-400">
-                            <option>Semua Produk</option>
-                        </select>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-sm text-gray-400 hidden sm:inline-block">Urutkan:</span>
-                        <select class="border border-gray-700 bg-[#1A255B] text-white text-sm rounded-md py-1 px-2 focus:outline-none focus:ring-1 focus:ring-blue-400">
-                            <option>Terbaru</option>
-                            <option>Nama A-Z</option>
-                            <option>Harga Termurah</option>
-                        </select>
-                    </div>
                     <a href="{{ route('admin.products.create') }}" 
                     class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg flex items-center transition-colors duration-200" 
                     aria-label="Tambah Produk">
@@ -286,29 +240,7 @@
                         Tambah Produk
                     </a>
                 </div>
-
-                <!-- Search & Filter -->
-                <div class="bg-[#1A255B] p-4 rounded-lg shadow-sm border border-gray-700 mb-6 flex flex-wrap items-center space-y-2 md:space-y-0 md:space-x-4">
-                    <div class="relative flex-1 w-full md:w-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <input type="text" placeholder="Cari nama produk..." 
-                            class="pl-8 py-2 w-full text-sm border-2 border-gray-700 bg-[#0e1a4b] text-white placeholder-gray-400 rounded-lg focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400">
-                    </div>
-                    <select class="p-2 border border-gray-700 bg-[#0e1a4b] text-white rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 w-full md:w-auto">
-                        <option value="">Semua Kategori</option>
-                        @foreach($allCategoriesForFilter as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                        @endforeach
-                    </select>
-                    <select class="p-2 border border-gray-700 bg-[#0e1a4b] text-white rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 w-full md:w-auto">
-                        <option>Status</option>
-                        <option>Aktif</option>
-                        <option>Non-aktif</option>
-                    </select>
-                </div>
-
+                
                 <!-- Products Table -->
                 <div class="bg-[#1A255B] rounded-lg shadow-xl overflow-hidden border border-gray-700">
                     <div class="overflow-x-auto">
@@ -383,8 +315,6 @@
                         </table>
                     </div>
                 </div>
-
-                <!-- Pagination -->
                 <div class="mt-6">
                     {{ $products->links() }}
                 </div>
@@ -652,7 +582,7 @@
                                         </a>
                                         <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kategori ini?');" class="inline-block">
                                             @csrf
-                                            @method('DELETE') {{-- Menambahkan @method('DELETE') untuk standar RESTful --}}
+                                            @method('DELETE')
                                             <button type="submit" class="p-2 text-gray-300 hover:bg-red-600 hover:text-white rounded-md transition-colors duration-200" title="Hapus Kategori">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -670,17 +600,13 @@
                         </table>
                     </div>
                 </div>
-
-                <!-- Pagination -->
                 <div class="mt-6">
                     {{ $orders->links() }}
                 </div>
             </div>
 
-            <!-- Content for Users Management -->
             <div id="content-users" class="content-section hidden">
                 <h1 class="text-3xl font-bold text-white mb-6">Manajemen Pengguna</h1>
-                <!-- Users Table -->
                 <div class="bg-[#1A255B] rounded-lg shadow-xl overflow-hidden border border-gray-700">
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-700">
@@ -722,7 +648,7 @@
                                         </a>
                                         <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus user ini?');" class="inline-block">
                                             @csrf
-                                            @method('DELETE') {{-- Menambahkan @method('DELETE') untuk standar RESTful --}}
+                                            @method('DELETE')
                                             <button type="submit" class="p-2 text-gray-300 hover:bg-red-600 hover:text-white rounded-md transition-colors duration-200" title="Hapus Kategori">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -740,8 +666,6 @@
                         </table>
                     </div>
                 </div>
-
-                <!-- Pagination -->
                 <div class="mt-6">
                     {{ $users->links() }}
                 </div>
@@ -749,7 +673,6 @@
         </main>
     </div>
 
-    <!-- Footer Section -->
     <footer class="w-full bg-[#0e1a4b] py-6 px-4 sm:px-8 text-white" aria-labelledby="footer-heading">
         <h2 id="footer-heading" class="sr-only">Navigasi Footer</h2>
         <div class="flex flex-col md:flex-row md:justify-between gap-8">
@@ -761,8 +684,8 @@
                 <nav aria-label="Tautan Ikuti Kami">
                     <h3 class="font-semibold mb-2">FOLLOW US</h3>
                     <ul>
-                        <li><a href="#" class="block text-gray-300 hover:text-white transition" aria-label="WhatsApp KIDSZSTORE">WhatsApp KIDSZSTORE</a></li>
-                        <li><a href="#" class="block mt-1 text-gray-300 hover:text-white transition" aria-label="Instagram KIDSZSTORE">Instagram KIDSZSTORE</a></li>
+                        <li><a href="https://wa.me/6281234567890" class="block text-gray-300 hover:text-white transition" aria-label="WhatsApp KIDSZSTORE">WhatsApp KIDSZSTORE</a></li>
+                        <li><a href="https://www.instagram.com/kidsz.id" class="block mt-1 text-gray-300 hover:text-white transition" aria-label="Instagram KIDSZSTORE">Instagram KIDSZSTORE</a></li>
                         <li><a href="#" class="block mt-1 text-gray-300 hover:text-white transition" aria-label="Discord KIDSZSTORE">Discord KIDSZSTORE</a></li>
                     </ul>
                 </nav>
@@ -779,8 +702,8 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <p class="text-gray-400 text-sm">&copy; 2025 KIDSZSTORE. All Rights Reserved.</p>
             <div class="flex gap-4 text-xl" role="group" aria-label="Tautan Media Sosial Footer">
-                <a href="#" class="hover:text-[#25D366]" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
-                <a href="#" class="hover:text-[#E4405F]" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+                <a href="https://wa.me/6281234567890" class="hover:text-[#25D366]" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>
+                <a href="https://www.instagram.com/kidsz.id" class="hover:text-[#E4405F]" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
                 <a href="#" class="hover:text-[#5865F2]" aria-label="Discord"><i class="fa-brands fa-discord" aria-hidden="true"></i></a>
             </div>
         </div>
@@ -794,27 +717,17 @@
              * @param {HTMLElement} clickedElement - Elemen tautan navigasi yang diklik.
              */
             window.showContent = function(contentId, clickedElement) {
-                // Sembunyikan semua bagian konten dengan menambahkan kelas 'hidden'.
                 document.querySelectorAll('.content-section').forEach(section => {
                     section.classList.add('hidden');
                 });
-
-                // Hapus styling aktif dari semua tautan navigasi sidebar.
                 document.querySelectorAll('aside nav a').forEach(link => {
                     link.classList.remove('bg-blue-600', 'text-white', 'font-semibold');
                     link.classList.add('text-gray-300', 'hover:bg-slate-700', 'hover:text-white');
                 });
-
-                // Tampilkan bagian konten yang dipilih dengan menghapus kelas 'hidden'.
                 document.getElementById('content-' + contentId).classList.remove('hidden');
-
-                // Tambahkan styling aktif ke tautan navigasi yang diklik.
                 clickedElement.classList.add('bg-blue-600', 'text-white', 'font-semibold');
                 clickedElement.classList.remove('text-gray-300', 'hover:bg-slate-700', 'hover:text-white');
             };
-
-            // Set 'Slides' sebagai halaman aktif secara default saat pemuatan awal.
-            // Ini mensimulasikan klik pada tautan navigasi 'Slides'.
             showContent('slides', document.getElementById('nav-slides'));
         });
     </script>

@@ -38,18 +38,12 @@ class Product extends Model
         return $this->image ? Storage::url($this->image) : null;
     }
 
-    /**
-     * Mendefinisikan relasi bahwa Product ini 'milik' satu Game.
-     */
+
     public function game()
     {
-        // belongsTo(NamaModel, 'foreign_key', 'owner_key')
         return $this->belongsTo(Game::class);
     }
 
-    /**
-     * Mendefinisikan relasi bahwa Product ini 'milik' satu Category.
-     */
     public function category()
     {
         return $this->belongsTo(Category::class);

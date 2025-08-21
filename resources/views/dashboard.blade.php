@@ -28,13 +28,11 @@
                 x-show="slidesData.length > 1 ? (Math.abs(activeSlide - i) <= 1 || (activeSlide === 0 && i === slidesData.length - 1) || (activeSlide === slidesData.length - 1 && i === 0)) : true"
             >
                 <a :href="slide.link || '#'" :aria-label="slide.alt_text">
-                    {{-- Menggunakan slide.image_url dan slide.alt_text dari data database --}}
                     <img :src="slide.image_url" :alt="slide.alt_text" class="w-full h-full object-cover cursor-pointer" />
                 </a>
             </div>
         </template>
 
-        {{-- Navigasi carousel hanya tampil jika jumlah slide lebih dari 1 --}}
         <template x-if="slidesData.length > 1">
             <div>
                 <button
@@ -68,7 +66,6 @@
         </template>
     </section>
 
-    {{-- Bagian Lain dari Halaman Anda --}}
     <section class="w-full max-w-[88%] mx-auto mt-8 bg-[#0e1a4b] md:rounded-3xl rounded-xl p-6" aria-labelledby="terlaris-heading">
         <h2 id="terlaris-heading" class="text-2xl font-bold text-white flex items-center gap-2 mb-4">
             <span role="img" aria-label="Api Emoji">🔥</span> Terlaris Bulan Ini!!
@@ -76,10 +73,8 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @forelse ($popularProducts as $product)
                 <article class="bg-[#17307a] rounded-xl overflow-hidden shadow flex flex-col">
-                    {{-- Tautan ini sekarang mengarah ke halaman detail produk --}}
                     <a href="{{ route('product.show', $product->id) }}" class="block group flex flex-col flex-grow" aria-label="Lihat produk {{ $product->title }}">
                         <div class="relative">
-                            {{-- Menampilkan gambar produk dinamis. Gunakan placeholder jika tidak ada gambar. --}}
                             <img src="{{ $product->image_url ?? 'https://placehold.co/400x200/1A255B/ffffff?text=No+Image' }}" alt="Gambar produk {{ $product->title }}" class="w-full h-36 object-cover group-hover:scale-105 transition-transform duration-200">
                         </div>
                         <div class="p-4 bg-[#00213a] flex flex-col flex-grow">
@@ -95,7 +90,6 @@
         </div>
     </section>
 
-    {{-- Product Categories Section (PERBAIKAN UTAMA DI SINI) --}}
     <section
         x-data="{
             categories: {{ json_encode($allCategories) }},

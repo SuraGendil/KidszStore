@@ -41,7 +41,6 @@
             </div>
         @endif
 
-        {{-- Order Details (Read-only) --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
                 <span class="info-label">Pelanggan</span>
@@ -76,7 +75,6 @@
             <div class="mb-6">
                 <label for="progress_id" class="block text-sm font-medium text-gray-300 mb-2">Update Progres Pesanan</label>
                 <select id="progress_id" name="progress_id" class="w-full px-4 py-2 bg-[#1A255B] border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    {{-- Variabel $progresses ini dikirim dari OrderController@edit --}}
                     @foreach($progresses as $progress)
                         <option value="{{ $progress->id }}" {{ old('progress_id', $order->progress_id) == $progress->id ? 'selected' : '' }}>
                             {{ $progress->name }}

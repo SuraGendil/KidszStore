@@ -14,7 +14,6 @@ class GameController extends Controller
      */
     public function index()
     {
-        // Arahkan ke dasbor utama karena daftar game sudah ditampilkan di sana.
         return redirect()->route('admin.dashboard');
     }
 
@@ -51,8 +50,6 @@ class GameController extends Controller
      */
     public function edit(Game $game)
     {
-        // Arahkan ke view untuk mengedit game.
-        // Pastikan Anda membuat file view di resources/views/games/edit.blade.php
         return view('games.edit', compact('game'));
     }
 
@@ -68,7 +65,6 @@ class GameController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
             if ($game->image) {
                 Storage::disk('public')->delete($game->image);
             }
@@ -85,7 +81,6 @@ class GameController extends Controller
      */
     public function destroy(Game $game)
     {
-        // Hapus gambar dari storage jika ada
         if ($game->image) {
             Storage::disk('public')->delete($game->image);
         }

@@ -70,7 +70,6 @@
                             <li>Pesanan Anda akan kami proses setelah konfirmasi diterima.</li>
                         </ol>
 
-                        {{-- PENAMBAHAN CATATAN DI SINI --}}
                         <div class="mt-4 bg-blue-900/20 border border-blue-400/30 rounded-lg p-3 text-sm text-gray-400">
                             <p><i class="fa-solid fa-circle-info mr-2 text-blue-400"></i><strong class="text-gray-300">Catatan:</strong> Jika pesan WhatsApp tidak muncul otomatis, Anda bisa menyalin format pesan lengkap di halaman <a href="{{ route('how-to-buy.index') }}" class="font-semibold text-blue-400 hover:underline">Cara Pembelian</a>.</p>
                             <p><i class="fa-solid fa-circle-info mr-2 text-blue-400"></i><strong class="text-gray-300">Catatan:</strong> ID Pesanan dapat Anda temukan di halaman <strong class="text-gray-300">Profil</strong> pada bagian <strong class="text-gray-300">Riwayat Transaksi</strong>.</p>
@@ -170,7 +169,6 @@
                     }"
                         class="self-start sticky top-24">
 
-                        {{-- Payment Form --}}
                         <template x-if="!paymentSuccess">
                             <div class="p-6 rounded-xl bg-[#1a2c6d] border border-blue-800 shadow-lg">
                                 <p class="text-lg font-semibold text-blue-300 mb-2">{{ $product->title }}</p>
@@ -208,7 +206,6 @@
                             </div>
                         </template>
 
-                        {{-- Success Message --}}
                         <template x-if="paymentSuccess">
                             <div class="p-6 rounded-xl bg-[#1a2c6d] border border-green-500 shadow-lg">
                                 <h3 class="text-2xl font-bold text-green-400 mb-4">Pembayaran Berhasil!</h3>

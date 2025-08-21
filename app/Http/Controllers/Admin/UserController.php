@@ -14,11 +14,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        // Ambil data pengguna, urutkan dari yang terbaru, dan gunakan paginasi
         $users = User::latest()->paginate(10);
 
-        // Mengembalikan view dengan data pengguna
-        // Catatan: Anda perlu membuat view 'admin.users.index' yang berisi tabel pengguna Anda.
         return view('admin.dashboard', compact('users'));
     }
 
@@ -35,7 +32,6 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // Validasi data yang masuk dari form
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => [
@@ -43,32 +39,26 @@ class UserController extends Controller
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('users')->ignore($user->id), // Pastikan email unik, kecuali untuk pengguna ini sendiri
+                Rule::unique('users')->ignore($user->id),
             ],
             'phone' => 'nullable|string|max:20',
-            'is_admin' => 'sometimes|boolean', // 'sometimes' berarti hanya validasi jika ada di request
+            'is_admin' => 'sometimes|boolean',
         ]);
 
-        // Perbarui data pengguna
         $user->name = $validated['name'];
         $user->email = $validated['email'];
         $user->phone = $validated['phone'];
 
-        // Atur role admin berdasarkan checkbox. Jika tidak dicentang, nilainya akan false.
         $user->is_admin = $request->has('is_admin');
 
-        $user->save(); // Simpan perubahan
-
-        // Redirect kembali ke halaman daftar pengguna dengan pesan sukses
+        $user->save(); 
         return redirect()->route('admin.dashboard')->with('success', 'Data pengguna berhasil diperbarui!');
     }
 
     public function destroy(User $user)
     {
-        // Hapus pengguna dari database
         $user->delete();
 
-        // Redirect kembali ke halaman dashboard dengan pesan sukses
         return redirect()->route('admin.dashboard')->with('success', 'Pengguna berhasil dihapus!');
     }
 }

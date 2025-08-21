@@ -28,9 +28,6 @@ class Game extends Model
         return $this->image ? Storage::url($this->image) : null;
     }
 
-    /**
-     * Mendefinisikan relasi bahwa Game ini 'memiliki banyak' Product.
-     */
     public function products()
     {
         return $this->hasMany(Product::class);

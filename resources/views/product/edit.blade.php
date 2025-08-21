@@ -24,7 +24,6 @@
     <div class="bg-[#1A255B] p-8 rounded-lg shadow-xl border border-gray-700"> 
         <h1 class="text-3xl font-bold text-white mb-6">Edit Produk</h1>
 
-        {{-- Menampilkan Error Validasi --}}
         @if ($errors->any())
             <div class="bg-red-500 bg-opacity-20 text-red-300 border border-red-600 text-sm rounded-lg p-4 mb-6" role="alert">
                 <strong class="font-bold">Oops! Terjadi kesalahan:</strong>
@@ -57,7 +56,6 @@
                 <select name="category_id" id="category_id" class="shadow appearance-none border border-gray-700 rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline bg-[#0e1a4b]" required>
                     <option value="">-- Pilih Kategori --</option>
                     @foreach($categories as $category)
-                        {{-- Menampilkan nama game di samping kategori untuk mempermudah pemilihan --}}
                         <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }} ({{ $category->game->name ?? 'Game tidak diketahui' }})</option>
                     @endforeach
                 </select>

@@ -21,7 +21,6 @@ class CategoriesController extends Controller
     }
     public function create()
     {
-        // Ambil semua game yang aktif untuk ditampilkan di form
         $games = Game::where('status', true)->orderBy('name')->get();
         return view('categories.create', compact('games'));
     }
@@ -46,7 +45,6 @@ class CategoriesController extends Controller
 
     public function edit(Category $category)
     {
-        // Ambil semua game yang aktif untuk ditampilkan di form
         $games = Game::where('status', true)->orderBy('name')->get();
         return view('categories.edit', compact('category', 'games'));
     }

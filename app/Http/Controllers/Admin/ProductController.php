@@ -32,7 +32,6 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // Menggunakan Validator untuk validasi
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -53,10 +52,8 @@ class ProductController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        // Mengunggah gambar
         $imagePath = $request->file('image')->store('products', 'public');
 
-        // Membuat produk baru
         Product::create([
             'title' => $request->title,
             'image' => $imagePath,
@@ -81,7 +78,6 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        // Menggunakan Validator untuk validasi
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -103,7 +99,6 @@ class ProductController extends Controller
 
         $data = $request->only(['title', 'price', 'stock', 'status']);
 
-        // Menghapus gambar lama jika ada gambar baru
         if ($request->hasFile('image')) {
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);

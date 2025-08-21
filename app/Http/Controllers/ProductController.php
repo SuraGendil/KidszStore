@@ -53,13 +53,10 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        // Pastikan produk yang diakses statusnya aktif
         if (!$product->status) {
-            // Jika tidak aktif, kembalikan halaman 404 Not Found
             abort(404);
         }
 
-        // Kirim data produk ke view 'products.show'
         return view('product.show', compact('product'));
     }
 
@@ -83,7 +80,6 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            // Hapus gambar lama
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }

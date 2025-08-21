@@ -13,8 +13,6 @@ return new class extends Migration
             $table->foreignId('progress_id')->nullable()->after('status')->constrained('progresses')->onDelete('set null');
         });
 
-        // Update existing records based on the old 'status' column
-        // Pastikan ProgressSeeder sudah dijalankan sebelum migrasi ini
         if (Schema::hasTable('progresses')) {
             $pendingId = DB::table('progresses')->where('name', 'Pending')->value('id');
             $onProgressId = DB::table('progresses')->where('name', 'On Progress')->value('id');

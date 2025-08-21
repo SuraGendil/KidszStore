@@ -22,9 +22,6 @@ class Progress extends Model
         'color',
     ];
 
-    /**
-     * Get all of the orders for the Progress status.
-     */
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);

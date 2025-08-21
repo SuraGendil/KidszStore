@@ -1,5 +1,4 @@
 <x-app-layout>
-    {{-- Container utama yang mengikuti tema gelap situs --}}
     <div class="w-full max-w-4xl mx-auto mt-32 mb-20">
         <div class="bg-[#0e1a4b]/80 backdrop-blur-sm border border-blue-400/20 shadow-2xl overflow-hidden sm:rounded-2xl text-white p-6 md:p-10">
             <div class="text-center mb-12">
@@ -7,13 +6,10 @@
                 <p class="text-gray-300 mt-2">Ikuti langkah-langkah mudah di bawah ini untuk menyelesaikan pesanan Anda.</p>
             </div>
 
-            {{-- Menggunakan relative di sini untuk garis absolut --}}
             <div class="relative space-y-8">
                 
-                {{-- Garis Timeline Vertikal di Latar Belakang --}}
                 <div class="absolute left-8 top-8 bottom-8 w-px bg-blue-500/30 hidden md:block"></div>
 
-                {{-- Step 1: Pilih Produk --}}
                 <div class="flex items-start gap-8 relative z-10">
                     <div class="flex-shrink-0">
                         <div class="flex items-center justify-center w-16 h-16 rounded-full bg-blue-600 text-white text-2xl font-bold ring-8 ring-[#0e1a4b]">1</div>
@@ -27,7 +23,6 @@
                     </div>
                 </div>
 
-                {{-- Step 2: Pembayaran --}}
                 <div class="flex items-start gap-8 relative z-10">
                     <div class="flex-shrink-0">
                         <div class="flex items-center justify-center w-16 h-16 rounded-full bg-blue-600 text-white text-2xl font-bold ring-8 ring-[#0e1a4b]">2</div>
@@ -41,7 +36,6 @@
                     </div>
                 </div>
 
-                {{-- Step 3: Konfirmasi WhatsApp --}}
                 <div class="flex items-start gap-8 relative z-10">
                     <div class="flex-shrink-0">
                         <div class="flex items-center justify-center w-16 h-16 rounded-full bg-blue-600 text-white text-2xl font-bold ring-8 ring-[#0e1a4b]">3</div>
@@ -54,7 +48,6 @@
                         <p class="text-gray-300">Setelah bayar, klik tombol konfirmasi. Jika WhatsApp terbuka dengan pesan otomatis, cukup lengkapi data yang diminta (Username/Password jika membeli Joki atau Gamepass).</p>
                         <p class="text-gray-300 mt-2">Jika pesan kosong, silakan salin dan lengkapi format di bawah ini:</p>
                         
-                        {{-- Blok Format Pesan WA yang Rapih --}}
                         <div class="mt-4 bg-slate-800/50 border border-slate-600 rounded-lg p-4 text-left text-sm text-gray-300 font-mono">
                             <p>Halo Admin KIDSZSTORE,</p>
                             <p class="mt-2">Saya ingin konfirmasi pesanan:</p>
@@ -71,22 +64,20 @@
                             </ul>
                             <p class="mt-2">Mohon segera diproses. Terima kasih!</p>
                         </div>
-                        {{-- CATATAN UNTUK ID PESANAN --}}
                         <div class="mt-4 bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-sm text-gray-400">
                             <p><i class="fa-solid fa-circle-info mr-2 text-blue-400"></i><strong class="text-gray-300">Catatan:</strong> ID Pesanan dapat Anda temukan di halaman <strong class="text-gray-300">Profil</strong> pada bagian <strong class="text-gray-300">Riwayat Transaksi</strong>.</p>
                         </div>
                     </div>
                 </div>
 
-                {{-- Step 4: Selesai --}}
                 <div class="flex items-start gap-8 relative z-10">
                     <div class="flex-shrink-0">
                         <div class="flex items-center justify-center w-16 h-16 rounded-full bg-green-500 text-white text-2xl font-bold ring-8 ring-[#0e1a4b]"><i class="fa-solid fa-check"></i></div>
                     </div>
                     <div>
                         <h3 class="text-xl font-semibold text-green-300 mb-2 pt-1 flex items-center gap-3">
-                           <i class="fa-solid fa-cogs"></i>
-                           Pesanan Diproses
+                            <i class="fa-solid fa-cogs"></i>
+                            Pesanan Diproses
                         </h3>
                         <p class="text-gray-300">Setelah konfirmasi, pesanan Anda akan segera kami proses. Anda dapat mengecek status pesanan melalui halaman "Cek Transaksi".</p>
                     </div>

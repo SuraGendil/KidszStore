@@ -22,9 +22,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Batalkan migrasi.
-     */
     public function down(): void
     {
         Schema::dropIfExists('products');

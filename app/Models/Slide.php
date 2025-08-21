@@ -29,9 +29,6 @@ class Slide extends Model
      */
     protected $appends = ['image_url'];
 
-    /**
-     * Get the full URL for the slide's image.
-     */
     public function getImageUrlAttribute(): ?string
     {
         return $this->image ? Storage::url($this->image) : null;

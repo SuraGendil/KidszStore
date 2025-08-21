@@ -1,5 +1,4 @@
 <x-app-layout>
-    {{-- Container utama yang mengikuti tema gelap situs --}}
     <div class="w-full max-w-3xl mx-auto mt-32">
         <div class="bg-[#0e1a4b]/80 backdrop-blur-sm border border-blue-400/20 shadow-2xl overflow-hidden sm:rounded-2xl text-white p-6 md:p-8">
             <div class="text-center mb-8">
@@ -8,7 +7,6 @@
             </div>
 
             <form action="{{ route('transaction.check') }}" method="GET" class="mb-8">
-                {{-- CSRF tidak diperlukan untuk method GET --}}
                 <div class="flex flex-col sm:flex-row gap-4">
                     <label for="transaction_code" class="sr-only">Kode Transaksi</label>
                     <input

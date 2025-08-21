@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Product; // Pastikan Anda sudah membuat model Product
+use App\Models\Product;
 use App\Models\Game;
-use App\Models\Slide; // Pastikan Anda sudah membuat model Slide
+use App\Models\Slide;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -17,21 +17,20 @@ class HomeController extends Controller
      */
     private function getSharedViewData(): array
     {
-        // Ambil data slide yang aktif dari database
         $slides = Slide::where('status', true)
-            ->orderBy('id', 'desc') // Urutkan berdasarkan slide terbaru
+            ->orderBy('id', 'desc')
             ->get();
 
         $popularProducts = Product::where('status', true)
             ->orderBy('sold_count', 'desc')
-            ->take(4) // Ambil 4 produk teratas
+            ->take(4)
             ->get();
 
         $games = Game::where('status', true)->orderBy('name')->get();
         $allCategories = Category::with('game')->where('status', true)->orderBy('id', 'asc')->get();
         $allProducts = Product::with(['game', 'category'])
             ->where('status', true)
-            ->orderBy('title', 'asc') // Urutkan produk berdasarkan judul (A-Z)
+            ->orderBy('title', 'asc')
             ->get();
 
         return compact('slides', 'popularProducts', 'games', 'allCategories', 'allProducts');

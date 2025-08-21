@@ -15,17 +15,11 @@ class Category extends Model
         'status',
     ];
 
-    /**
-     * Mendapatkan game yang dimiliki oleh kategori ini.
-     */
     public function game()
     {
         return $this->belongsTo(Game::class);
     }
 
-    /**
-     * Mendefinisikan relasi bahwa Kategori ini 'memiliki banyak' Product.
-     */
     public function products()
     {
         return $this->hasMany(Product::class);

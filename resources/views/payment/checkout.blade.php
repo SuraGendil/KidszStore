@@ -1,12 +1,10 @@
 <x-app-layout>
-    {{-- Tentukan URL script Snap.js berdasarkan environment --}}
     @php
         $snapJsUrl = config('services.midtrans.is_production')
             ? 'https://app.midtrans.com/snap/snap.js'
             : 'https://app.sandbox.midtrans.com/snap/snap.js';
     @endphp
 
-    {{-- Muat script Snap.js dari Midtrans --}}
     <script src="{{ $snapJsUrl }}" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
 
     <div class="w-full max-w-2xl mx-auto mt-32">
@@ -41,20 +39,16 @@
 
     <script type="text/javascript">
       document.getElementById('pay-button').onclick = function(){
-        // SnapToken di-pass dari controller
         snap.pay('{{ $snapToken }}', {
           onSuccess: function(result){
-            /* Anda bisa menambahkan logika di sini, misalnya, redirect ke halaman sukses */
             console.log(result);
             window.location.href = '{{ route("transaction.index") }}?transaction_code={{ $order->order_id }}';
           },
           onPending: function(result){
-            /* Biasanya terjadi jika pembayaran butuh waktu, seperti transfer bank */
             console.log(result);
             window.location.href = '{{ route("transaction.index") }}?transaction_code={{ $order->order_id }}';
           },
           onError: function(result){
-            /* Terjadi jika pembayaran gagal atau popup ditutup */
             console.log(result);
             alert('Pembayaran gagal atau dibatalkan.');
           }

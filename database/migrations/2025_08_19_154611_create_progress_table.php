@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('progresses', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique(); // e.g., Pending, On Progress, Done, Cancelled
-            $table->string('color')->default('gray'); // e.g., yellow, blue, green, red for badges
+            $table->string('name')->unique();
+            $table->string('color')->default('gray');
             $table->timestamps();
         });
     }

@@ -10,12 +10,12 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('order_id')->unique(); // ID unik dari sistem kita
+            $table->string('order_id')->unique();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('product_id')->nullable()->constrained()->onDelete('set null');
             $table->integer('quantity');
             $table->decimal('total_price', 15, 2);
-            $table->string('status')->default('pending'); // pending, success, failed, expired
+            $table->string('status')->default('pending');
             $table->string('snap_token')->nullable();
             $table->timestamps();
         });

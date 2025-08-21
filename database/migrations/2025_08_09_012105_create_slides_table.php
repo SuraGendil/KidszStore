@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Jalankan migrasi.
-     */
+
     public function up(): void
     {
         Schema::create('slides', function (Blueprint $table) {
@@ -21,9 +19,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Batalkan migrasi.
-     */
     public function down(): void
     {
         Schema::dropIfExists('slides');

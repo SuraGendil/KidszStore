@@ -15,8 +15,6 @@
 </head>
 
 <body class="bg-[#1A255B] dark:bg-[#0a0a0a] text-[#1b1b18] min-h-screen">
-
-    {{-- Header --}}
     <header class="fixed top-0 left-0 right-0 z-50 w-full px-4 sm:px-8 py-3 bg-[#0e1a4b] text-white" aria-label="Situs Navigasi Utama">
         <div class="flex items-center justify-between">
             <div class="flex-shrink-0">
@@ -56,20 +54,19 @@
             </nav>
 
             <div class="flex items-center gap-4">
-                {{-- Aksi Pengguna (Hanya Desktop) --}}
                 <div class="hidden md:flex items-center gap-4">
-                     <div class="flex items-center gap-3 pr-2 border-r border-gray-700" role="group" aria-label="Tautan Media Sosial">
+                    <div class="flex items-center gap-3 pr-2 border-r border-gray-700" role="group" aria-label="Tautan Media Sosial">
                         <a href="https://wa.me/6281234567890" target="_blank" class="text-green-400 text-xl hover:text-green-300" title="WhatsApp">
                             <i class="fa-brands fa-whatsapp"></i>
                         </a>
-                        <a href="https://www.instagram.com/akunKIDZSTORE" target="_blank" class="text-pink-400 text-xl hover:text-pink-300" title="Instagram">
+                        <a href="https://www.instagram.com/kidsz.id" target="_blank" class="text-pink-400 text-xl hover:text-pink-300" title="Instagram">
                             <i class="fa-brands fa-instagram"></i>
                         </a>
                         <a href="https://discord.gg/inviteKIDZSTORE" target="_blank" class="text-indigo-400 text-xl hover:text-indigo-300" title="Discord">
                             <i class="fa-brands fa-discord"></i>
                         </a>
                     </div>
-                     @guest
+                    @guest
                         <a href="{{ route('login') }}" class="px-6 py-2 bg-white text-[#0e1a4b] rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors duration-200">
                             Masuk
                         </a>
@@ -85,14 +82,13 @@
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <a href="{{ route('logout') }}"
-                               onclick="event.preventDefault(); this.closest('form').submit();"
-                               class="px-6 py-2 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors duration-200">
+                                onclick="event.preventDefault(); this.closest('form').submit();"
+                                class="px-6 py-2 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors duration-200">
                                 Keluar
                             </a>
                         </form>
                     @endauth
                 </div>
-                {{-- Tombol Hamburger (Hanya Mobile) --}}
                 <div class="md:hidden">
                     <button id="menu-toggle" type="button" class="text-white hover:text-blue-400 focus:outline-none" aria-controls="mobile-menu" aria-expanded="false">
                         <span class="sr-only">Buka menu utama</span>
@@ -129,7 +125,6 @@
                     </a>
                 </li>
             </ul>
-            {{-- Aksi Pengguna di Mobile --}}
             <div class="flex flex-col items-center gap-4 pt-4 border-t border-gray-700">
                 @guest
                     <a href="{{ route('login') }}" class="w-full text-center px-6 py-2 bg-white text-[#0e1a4b] rounded-lg text-sm font-semibold hover:bg-gray-200 transition-colors duration-200">
@@ -147,19 +142,18 @@
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <a href="{{ route('logout') }}"
-                           onclick="event.preventDefault(); this.closest('form').submit();"
-                           class="block text-center w-full px-6 py-2 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors duration-200">
+                            onclick="event.preventDefault(); this.closest('form').submit();"
+                            class="block text-center w-full px-6 py-2 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors duration-200">
                             Keluar
                         </a>
                     </form>
                 @endauth
             </div>
-             {{-- Media Sosial di Mobile --}}
             <div class="flex justify-center items-center gap-6 pt-4 mt-4 border-t border-gray-700" role="group" aria-label="Tautan Media Sosial">
-                <a href="https://wa.me/6281234567890" target="_blank" class="text-green-400 text-2xl" title="WhatsApp">
+                <a href="https://wa.me/6281380207365" target="_blank" class="text-green-400 text-2xl" title="WhatsApp">
                     <i class="fa-brands fa-whatsapp"></i>
                 </a>
-                <a href="https://www.instagram.com/akunKIDZSTORE" target="_blank" class="text-pink-400 text-2xl" title="Instagram">
+                <a href="https://www.instagram.com/kidsz.id" target="_blank" class="text-pink-400 text-2xl" title="Instagram">
                     <i class="fa-brands fa-instagram"></i>
                 </a>
                 <a href="https://discord.gg/inviteKIDZSTORE" target="_blank" class="text-indigo-400 text-2xl" title="Discord">
@@ -168,15 +162,11 @@
             </div>
         </div>
     </header>
-    {{-- End Header --}}
 
-    {{-- Conditional Layout for Admin vs Public --}}
     @if(Auth::check() && Auth::user()->is_admin && request()->routeIs('admin.*'))
-        {{-- Admin Layout with Sidebar --}}
-        <div class="flex min-h-screen pt-16"> {{-- pt-16 for fixed header offset --}}
+        <div class="flex min-h-screen pt-16">
             <aside class="w-64 bg-[#1A255B] shadow-lg flex-col justify-between hidden md:flex">
                 <div> 
-                    <!-- Admin Navigation Menu -->
                     <nav class="mt-8 px-2">
                         <h3 class="uppercase text-gray-500 font-semibold text-xs mt-4 px-4 mb-2">Menu</h3>
                         <ul class="space-y-1">
@@ -198,7 +188,7 @@
                                     Orders
                                 </a>
                             </li>
-                             <li>
+                            <li>
                                 <a href="{{ route('admin.users.index') }}" class="flex items-center p-3 rounded-lg transition-colors duration-200 {{ request()->routeIs('admin.users.*') ? 'bg-sky-600 text-white font-semibold' : 'text-gray-300 hover:bg-slate-700 hover:text-white' }}">
                                     <i class="fa-solid fa-users w-5 h-5 mr-3" aria-hidden="true"></i>
                                     Users
@@ -209,19 +199,17 @@
                 </div>
             </aside>
 
-            {{-- Main Admin Content --}}
             <main class="flex-1 p-6 lg:p-8 bg-[#0e1a4b]">
                 {{ $slot }}
             </main>
+
         </div>
     @else
-        {{-- Public Layout --}}
         <main class="w-full p-6 lg:p-8 flex flex-col items-center">
             {{ $slot }}
         </main>
     @endif
 
-    {{-- Footer --}}
     <footer class="w-full bg-[#0e1a4b] py-6 px-8 text-white" aria-labelledby="footer-heading">
         <h2 id="footer-heading" class="sr-only">Navigasi Footer</h2>
         <div class="flex flex-col md:flex-row md:justify-between gap-8">
@@ -233,8 +221,8 @@
                 <nav aria-label="Tautan Ikuti Kami">
                     <h3 class="font-semibold mb-2">FOLLOW US</h3>
                     <ul>
-                        <li><a href="https://wa.me/6281234567890" target="_blank" class="block text-gray-300 hover:text-white transition" aria-label="WhatsApp KIDSZSTORE">WhatsApp KIDSZSTORE</a></li>
-                        <li><a href="https://www.instagram.com/akunKIDZSTORE" target="_blank" class="block mt-1 text-gray-300 hover:text-white transition" aria-label="Instagram KIDSZSTORE">Instagram KIDSZSTORE</a></li>
+                        <li><a href="https://wa.me/6281380207365" target="_blank" class="block text-gray-300 hover:text-white transition" aria-label="WhatsApp KIDSZSTORE">WhatsApp KIDSZSTORE</a></li>
+                        <li><a href="https://www.instagram.com/kidsz.id" target="_blank" class="block mt-1 text-gray-300 hover:text-white transition" aria-label="Instagram KIDSZSTORE">Instagram KIDSZSTORE</a></li>
                         <li><a href="https://discord.gg/inviteKIDZSTORE" target="_blank" class="block mt-1 text-gray-300 hover:text-white transition" aria-label="Discord KIDSZSTORE">Discord KIDSZSTORE</a></li>
                     </ul>
                 </nav>
@@ -251,14 +239,13 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <p class="text-gray-400 text-sm">&copy; 2025 KIDSZSTORE. All Rights Reserved.</p>
             <div class="flex gap-4 text-xl" role="group" aria-label="Tautan Media Sosial Footer">
-                <a href="https://wa.me/6281234567890" target="_blank" class="hover:text-[#25D366]" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-                <a href="https://www.instagram.com/akunKIDZSTORE" target="_blank" class="hover:text-[#E4405F]" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://wa.me/6281380207365" target="_blank" class="hover:text-[#25D366]" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://www.instagram.com/kidsz.id" target="_blank" class="hover:text-[#E4405F]" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
                 <a href="https://discord.gg/inviteKIDZSTORE" target="_blank" class="hover:text-[#5865F2]" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
             </div>
         </div>
     </footer>
     
-    {{-- Script untuk Toggle Menu Mobile --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const menuToggle = document.getElementById('menu-toggle');
